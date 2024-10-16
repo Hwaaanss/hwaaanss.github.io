@@ -95,5 +95,3 @@ for i in range(1, timesteps):
 output = pd.DataFrame({'ID': test_ids, 'y': y_test_pred_list})
 output.to_csv('submission.csv', index=False)
 ```
-
-![leaderboard](leaderboard.PNG)
