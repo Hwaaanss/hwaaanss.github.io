@@ -95,8 +95,5 @@ for i in range(1, timesteps):
 output = pd.DataFrame({'ID': test_ids, 'y': y_test_pred_list})
 output.to_csv('submission.csv', index=False)
 ```
-<<<<<<< HEAD
 
 ![leaderboard](../images/2024-08-03-ssbalckboxopti/leaderboard.png)
-=======
->>>>>>> 0242796d7fde157820296674bd640baeb4782fdc
