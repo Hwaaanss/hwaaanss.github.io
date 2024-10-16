@@ -1,3 +1,9 @@
+---
+layout: single
+title: "2024 Samsung AI Challenge : Black-box Optimization 현재 리더보드 4위"
+---
+
+
 # Samsung Blackbox Optimizer 경진대회
 
 
