@@ -17,7 +17,7 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 # Site Settings
 locale                   : "en-US"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "Jaehwan's ML/AI Research Blog"
+title                    : "Hwan's ML/AI Research Blog"
 title_separator          : "-"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "Jaehwan Lee"
@@ -113,10 +113,10 @@ analytics:
 
 # Site Author
 author:
-  name             : "Your Name"
+  name             : "Jaehwan Lee"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "I am an **amazing** person."
-  location         : "Somewhere"
+  bio              : "ML/AI 분야를 공부합니다."
+  location         : "Seoul"
   email            :
   links:
     - label: "Email"
