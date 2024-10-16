@@ -1,5 +1,5 @@
 ---
-layout: single
+![leaderboard](/Users/hwan/Documents/데이콘/SamsungBlackBoxOpti/1st/best_score/leaderboard.png)layout: single
 title: "2024 Samsung AI Challenge : Black-box Optimization 현재 리더보드 4위"
 ---
 
@@ -96,4 +96,4 @@ output = pd.DataFrame({'ID': test_ids, 'y': y_test_pred_list})
 output.to_csv('submission.csv', index=False)
 ```
 
-![leaderboard](leaderboard.PNG)
+![leaderboard](../images/2024-08-03-ssbalckboxopti/leaderboard.png)
