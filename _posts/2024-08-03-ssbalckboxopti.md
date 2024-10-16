@@ -96,4 +96,5 @@ output = pd.DataFrame({'ID': test_ids, 'y': y_test_pred_list})
 output.to_csv('submission.csv', index=False)
 ```
 
+### 뿌듯해서 찍은 데이콘 리더보드 
 ![leaderboard](../images/2024-08-03-ssbalckboxopti/leaderboard.png)
