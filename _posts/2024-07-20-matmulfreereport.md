@@ -1,7 +1,10 @@
 ---
 layout: single
 title: "Scalable MatMul-free Language Modeling Report Review by hwaaanss"
+mathjax: true
 ---
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
 # 논문 리뷰: Scalable MatMul-free Language Modeling
