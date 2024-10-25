@@ -1,4 +1,9 @@
-```markdown
+---
+layout: single
+title: "Scalable MatMul-free Language Modeling Report Review by hwaaanss"
+---
+
+
 # Scalable MatMul-free Language Modeling 논문 분석
 
 "Scalable MatMul-free Language Modeling" 논문은 대형 언어 모델(LLM)에서 자주 사용되는 행렬 곱셈(MatMul) 연산을 제거하면서도 고성능을 유지할 수 있는 새로운 모델 구조를 제안하고 검증하는 데 중점을 둔다. LLM의 계산량이 증가함에 따라 MatMul 연산은 LLM 전체 연산의 주요 비중을 차지하게 되며, 이는 모델의 파라미터 수와 맥락 길이가 증가할수록 더 큰 문제로 작용한다. 본 연구는 LLM에서 MatMul을 없애고도 기존 Transformer 기반 모델과 유사한 성능을 유지하는 ‘MatMul-free’ 모델을 구현해낸다. 이로 인해 필요한 메모리 자원을 절약하면서, GPU와 FPGA 등의 하드웨어에서 효율적인 모델 구현이 가능해졌다.
