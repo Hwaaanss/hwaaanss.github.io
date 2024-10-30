@@ -63,15 +63,15 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     3. $Ỹ \leftarrow \text{activation\_quant}(r(X - \mu))$
   
   - **Activation Quantization**
-    - $ s \leftarrow \frac{127}{\max(|X|)} $
-    - $ X̃ \leftarrow \text{round}(sX) $, clamped to range $[-128, 127]$
+    - $s \leftarrow \frac{127}{\max(|X|)}$
+    - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
   - **Weight Quantization**
-    - $ s \leftarrow \frac{1}{\text{mean}(|W|)} $
-    - $ W̃ \leftarrow \text{round}(sW) $, clamped to range $[-1, 1]$
+    - $s \leftarrow \frac{1}{\text{mean}(|W|)}$
+    - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
   
   - **Result Computation**
-    - $ O \leftarrow Ỹ ⊛ W̃ + b $
+    - $O \leftarrow Ỹ ⊛ W̃ + b$
 
   여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
 
