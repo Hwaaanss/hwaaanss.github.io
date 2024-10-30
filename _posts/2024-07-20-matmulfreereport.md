@@ -1,11 +1,9 @@
 ---
 layout: single
-title: "Scalable MatMul-free Language Modeling Report Review by hwaaanss"
+title: "논문 리뷰: Scalable MatMul-free Language Modeling by hwaaanss"
 mathjax: true
 ---
 
-
-# 논문 리뷰: Scalable MatMul-free Language Modeling
 
 ## 1. 논문 제목 및 저자 정보
 
@@ -57,8 +55,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
      Ternary Weights는 덧셈과 뺄셈만으로 연산을 수행하므로, 전력 소모가 줄어들고 메모리 절감 효과가 크다. 특히, 덧셈 연산만 포함되므로 자원 소모가 적은 저전력 하드웨어에서도 효율적으로 구동할 수 있다.
 
    - **안정성 향상을 위한 RMSNorm과 Fused BitLinear 레이어**  
-  MatMul-free 구조에서 가중치 불안정을 해결하기 위해 RMSNorm과 Fused BitLinear 레이어가 도입되었다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다.
-  이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
+  MatMul-free 구조에서 가중치 불안정을 해결하기 위해 RMSNorm과 Fused BitLinear 레이어가 도입되었다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. 이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
 
   - **Forward Pass**
     1. $$ \mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X) $$
