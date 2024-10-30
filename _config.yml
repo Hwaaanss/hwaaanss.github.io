@@ -22,6 +22,7 @@ title_separator          : "|"
 subtitle                 : # site tagline that appears below site title in masthead
 name                     : "Hwan"
 description              : "ML/AI 분야를 공부합니다."
+published                : True
 url                      : "https://hwaaanss.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
 repository               : # GitHub username/repo-name e.g. "mmistakes/minimal-mistakes"
