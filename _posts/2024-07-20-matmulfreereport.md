@@ -60,7 +60,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     - **Forward Pass**
     1. $\mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X)$
     2. $r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}}$
-    3. $Ỹ \leftarrow \text{activation\_quant}(r(X - \mu))$
+    3. $Ỹ \leftarrow \text{activation\quant}(r(X - \mu))$
   
   - **Activation Quantization**
     - $s \leftarrow \frac{127}{\max(|X|)}$
