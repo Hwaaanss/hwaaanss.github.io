@@ -4,8 +4,6 @@ title: "Scalable MatMul-free Language Modeling Report Review by hwaaanss"
 mathjax: true
 ---
 
-<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-
 
 # 논문 리뷰: Scalable MatMul-free Language Modeling
 
@@ -63,9 +61,9 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
   이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
 
   - **Forward Pass**
-    1. \(\mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X)\)
-    2. \( r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}} \)
-    3. \( Ỹ \leftarrow \text{activation\_quant}(r(X - \mu)) \)
+    1. $$ \mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X) $$
+    2. $$ r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}} $$
+    3. $$ Ỹ \leftarrow \text{activation\_quant}(r(X - \mu)) $$
   
   - **Activation Quantization**
     - $$ s \leftarrow \frac{127}{\text{max}(|X|)} $$
