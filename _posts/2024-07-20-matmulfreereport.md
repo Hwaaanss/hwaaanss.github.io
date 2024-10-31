@@ -45,9 +45,9 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
    - **Ternary Weights의 정의 및 동작 방식**  
      Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
 
-     $$
+     $
      y = x \odot W = \sum_{j=1}^{d} x_j W_{ij}
-     $$
+     $
      
      이를 통해 행렬 곱셈 없이도 가중치를 학습하며, 메모리 사용량과 전력 소모를 크게 줄일 수 있다.
 
@@ -62,16 +62,16 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     2. $r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}}$
     3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
   
-  - **Activation Quantization**
-    - $s \leftarrow \frac{127}{\max(|X|)}$
-    - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
+    - **Activation Quantization**
+      - $s \leftarrow \frac{127}{\max(|X|)}$
+      - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
-  - **Weight Quantization**
-    - $s \leftarrow \frac{1}{\text{mean}(|W|)}$
-    - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
+    - **Weight Quantization**
+      - $s \leftarrow \frac{1}{\text{mean}(|W|)}$
+      - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
   
-  - **Result Computation**
-    - $O \leftarrow Ỹ ⊛ W̃ + b$
+    - **Result Computation**
+      - $O \leftarrow Ỹ ⊛ W̃ + b$
 
   여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
 
