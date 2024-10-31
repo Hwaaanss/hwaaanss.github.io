@@ -2,6 +2,7 @@
 layout: single
 title: "논문 리뷰: Scalable MatMul-free Language Modeling by hwaaanss"
 mathjax: true
+toc: true
 ---
 
 
