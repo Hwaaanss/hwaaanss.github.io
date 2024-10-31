@@ -61,11 +61,11 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
   
   - **Activation Quantization**
-    - $s \leftarrow \frac{127}{\max(|X|)}$
+    - $s \leftarrow \frac{127}{\max(|X|)} $
     - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
   - **Weight Quantization**
-    - $s \leftarrow \frac{1}{\text{mean}(|W|)}$
+    - $s \leftarrow \frac{1}{\text{mean}(|W|)} $
     - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
   
   - **Result Computation**
@@ -84,7 +84,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 
   - **Reset Gate**  
     $$ r_t = \sigma(x_t W_{xr} + h_{t-1} W_{hr} + b_r) $$  
-    여기서 \( r_t \)는 리셋 게이트로, 이전 은닉 상태 \( h_{t-1} \)의 정보 유지 비율을 결정한다.
+    여기서 $r_t$는 리셋 게이트로, 이전 은닉 상태 $h_{t-1}$의 정보 유지 비율을 결정한다.
 
   - **Forget Gate**  
     $$ f_t = \sigma(x_t W_{xf} + h_{t-1} W_{hf} + b_f) $$ 
@@ -102,22 +102,22 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
   MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
 
   - **Forget Gate**  
-   $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
-   여기서 $W_f$는 삼진 가중치로 구성되어 있다.
+    $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
+    여기서 $W_f$는 삼진 가중치로 구성되어 있다.
 
   - **Candidate Hidden State**  
-   $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
-   여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
+    $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
+    여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
 
-  - **Final Hidden State**  
+ - **Final Hidden State**  
    $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
    망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
 
   - **Output Gate**  
-   $$ g_t = \sigma(x_t \odot W_g + b_g) $$
-   $$ o'_t = g_t \odot h_t $$
-   $$ o_t = o'_t \odot W_o + b_o $$
-   여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다.
+    $$ g_t = \sigma(x_t \odot W_g + b_g) $$
+    $$ o'_t = g_t \odot h_t $$
+    $$ o_t = o'_t \odot W_o + b_o $$
+    여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다.
 
 MatMul-Free GRU는 곱셈 없이 작동하면서도 기존 GRU의 정보 처리 능력을 유지하며, 병렬 처리를 지원하여 하드웨어 효율성을 높인다.
 
