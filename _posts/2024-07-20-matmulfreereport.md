@@ -4,6 +4,7 @@ title: "논문 리뷰: Scalable MatMul-free Language Modeling by hwaaanss"
 mathjax: true
 toc: true
 toc_sticky: true
+toc_label: Scalable MatMul-Free
 categories: Paper_Review
 tag: [Math, ML]
 ---
@@ -65,11 +66,11 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
       3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
   
     - **Activation Quantization**
-      - $s \leftarrow \frac{127}{\max(|X|)} $
+      - $s \leftarrow \frac{127}{\max(|X|)}$
       - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
     - **Weight Quantization**
-      - $s \leftarrow \frac{1}{\text{mean}(|W|)} $
+      - $s \leftarrow \frac{1}{\text{mean}(|W|)}$
       - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
   
     - **Result Computation**
