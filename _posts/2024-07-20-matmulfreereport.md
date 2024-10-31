@@ -42,82 +42,82 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 ### 사용된 방법론 및 모델 구조
 1. **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈과 뺄셈으로 대체했다.
 
-- **Ternary Weights의 정의 및 동작 방식**  
-  Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
+  - **Ternary Weights의 정의 및 동작 방식**  
+    Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
 
-     $$ y = x \odot W = \sum_{j=1}^{d} x_j W_{ij} $$
+       $$ y = x \odot W = \sum_{j=1}^{d} x_j W_{ij} $$
      
-     이를 통해 행렬 곱셈 없이도 가중치를 학습하며, 메모리 사용량과 전력 소모를 크게 줄일 수 있다.
+       이를 통해 행렬 곱셈 없이도 가중치를 학습하며, 메모리 사용량과 전력 소모를 크게 줄일 수 있다.
 
-- **메모리 및 전력 효율성**  
-  Ternary Weights는 덧셈과 뺄셈만으로 연산을 수행하므로, 전력 소모가 줄어들고 메모리 절감 효과가 크다. 특히, 덧셈 연산만 포함되므로 자원 소모가 적은 저전력 하드웨어에서도 효율적으로 구동할 수 있다.
+  - **메모리 및 전력 효율성**  
+    Ternary Weights는 덧셈과 뺄셈만으로 연산을 수행하므로, 전력 소모가 줄어들고 메모리 절감 효과가 크다. 특히, 덧셈 연산만 포함되므로 자원 소모가 적은 저전력 하드웨어에서도 효율적으로 구동할 수 있다.
 
-- **안정성 향상을 위한 RMSNorm과 Fused BitLinear 레이어**  
-  MatMul-free 구조에서 가중치 불안정을 해결하기 위해 RMSNorm과 Fused BitLinear 레이어가 도입되었다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. 이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
+  - **안정성 향상을 위한 RMSNorm과 Fused BitLinear 레이어**  
+    MatMul-free 구조에서 가중치 불안정을 해결하기 위해 RMSNorm과 Fused BitLinear 레이어가 도입되었다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. 이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
 
-  - **Forward Pass**
-    1. $\mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X)$
-    2. $r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}}$
-    3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
+    - **Forward Pass**
+      1. $\mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X)$
+      2. $r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}}$
+      3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
   
-  - **Activation Quantization**
-    - $s \leftarrow \frac{127}{\max(|X|)} $
-    - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
+    - **Activation Quantization**
+      - $s \leftarrow \frac{127}{\max(|X|)} $
+      - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
-  - **Weight Quantization**
-    - $s \leftarrow \frac{1}{\text{mean}(|W|)} $
-    - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
+    - **Weight Quantization**
+      - $s \leftarrow \frac{1}{\text{mean}(|W|)} $
+      - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
   
-  - **Result Computation**
-    - $O \leftarrow Ỹ ⊛ W̃ + b$
+    - **Result Computation**
+      - $O \leftarrow Ỹ ⊛ W̃ + b$
 
   여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
 
 2. **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
 3. **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
-- **GRU 기반 Token Mixer**
-  GRU(Gated Recurrent Unit)는 순환 신경망(RNN)의 변형으로, LSTM(Long Short-Term Memory)보다 단순하면서 유사한 성능을 제공하는 구조이다. 본 논문에서는 GRU를 기반으로 곱셈 연산을 배제하고 요소별 연산과 누적 덧셈으로 구성된 **MatMul-Free GRU(MLGRU)**를 설계하였다.
+  - **GRU 기반 Token Mixer**
+    GRU(Gated Recurrent Unit)는 순환 신경망(RNN)의 변형으로, LSTM(Long Short-Term Memory)보다 단순하면서 유사한 성능을 제공하는 구조이다. 본 논문에서는 GRU를 기반으로 곱셈 연산을 배제하고 요소별 연산과 누적 덧셈으로 구성된 **MatMul-Free GRU(MLGRU)**를 설계하였다.
 
-- **표준 GRU 구조**
-  기존 GRU는 입력 $x_t$와 이전 은닉 상태 $h_{t-1}$을 사용하여 여러 게이트를 계산한다. 표준 GRU의 수식은 다음과 같다:
+  - **표준 GRU 구조**
+    기존 GRU는 입력 $x_t$와 이전 은닉 상태 $h_{t-1}$을 사용하여 여러 게이트를 계산한다. 표준 GRU의 수식은 다음과 같다:
 
-  - **Reset Gate**  
-    $$ r_t = \sigma(x_t W_{xr} + h_{t-1} W_{hr} + b_r) $$  
-    여기서 $r_t$는 리셋 게이트로, 이전 은닉 상태 $h_{t-1}$의 정보 유지 비율을 결정한다.
+    - **Reset Gate**  
+      $$ r_t = \sigma(x_t W_{xr} + h_{t-1} W_{hr} + b_r) $$  
+      여기서 $r_t$는 리셋 게이트로, 이전 은닉 상태 $h_{t-1}$의 정보 유지 비율을 결정한다.
 
-  - **Forget Gate**  
-    $$ f_t = \sigma(x_t W_{xf} + h_{t-1} W_{hf} + b_f) $$ 
-    $f_t$는 망각 게이트로, 이전 은닉 상태 $h_{t-1}$가 새로운 은닉 상태로 얼마나 전달될지를 결정한다.
+    - **Forget Gate**  
+      $$ f_t = \sigma(x_t W_{xf} + h_{t-1} W_{hf} + b_f) $$ 
+      $f_t$는 망각 게이트로, 이전 은닉 상태 $h_{t-1}$가 새로운 은닉 상태로 얼마나 전달될지를 결정한다.
 
-  - **Candidate Hidden State**  
-    $$ c_t = \tanh(x_t W_{xc} + (r_t \odot h_{t-1}) W_{cc} + b_c) $$  
-    리셋 게이트의 결과 $r_t$를 바탕으로 생성된 후보 은닉 상태 $c_t$이다.
+    - **Candidate Hidden State**  
+      $$ c_t = \tanh(x_t W_{xc} + (r_t \odot h_{t-1}) W_{cc} + b_c) $$  
+      리셋 게이트의 결과 $r_t$를 바탕으로 생성된 후보 은닉 상태 $c_t$이다.
 
-  - **Final Hidden State**  
-    $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$ 
-    망각 게이트와 후보 은닉 상태 $c_t$를 활용하여 최종 은닉 상태 $h_t$를 업데이트한다.
+    - **Final Hidden State**  
+      $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$ 
+      망각 게이트와 후보 은닉 상태 $c_t$를 활용하여 최종 은닉 상태 $h_t$를 업데이트한다.
 
-- **MatMul-Free GRU (MLGRU) 구조**
-  MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
+  - **MatMul-Free GRU (MLGRU) 구조**
+    MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
 
-  - **Forget Gate**  
-    $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
-    여기서 $W_f$는 삼진 가중치로 구성되어 있다.
+    - **Forget Gate**  
+      $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
+      여기서 $W_f$는 삼진 가중치로 구성되어 있다.
 
-  - **Candidate Hidden State**  
-    $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
-    여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
+    - **Candidate Hidden State**  
+      $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
+      여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
 
-  - **Final Hidden State**  
-    $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
-    망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
+    - **Final Hidden State**  
+      $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
+      망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
 
-  - **Output Gate**  
-    $$ g_t = \sigma(x_t \odot W_g + b_g) $$
-    $$ o'_t = g_t \odot h_t $$
-    $$ o_t = o'_t \odot W_o + b_o $$
-    여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다.
+    - **Output Gate**  
+      $$ g_t = \sigma(x_t \odot W_g + b_g) $$
+      $$ o'_t = g_t \odot h_t $$
+      $$ o_t = o'_t \odot W_o + b_o $$
+      여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다.
 
 MatMul-Free GRU는 곱셈 없이 작동하면서도 기존 GRU의 정보 처리 능력을 유지하며, 병렬 처리를 지원하여 하드웨어 효율성을 높인다.
 
