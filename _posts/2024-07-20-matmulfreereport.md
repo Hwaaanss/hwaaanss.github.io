@@ -109,9 +109,9 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
     여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
 
- - **Final Hidden State**  
-   $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
-   망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
+  - **Final Hidden State**  
+    $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
+    망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
 
   - **Output Gate**  
     $$ g_t = \sigma(x_t \odot W_g + b_g) $$
