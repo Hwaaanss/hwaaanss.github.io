@@ -132,11 +132,11 @@ a {
   }
 
   &:visited {
-    color: $link-color-visited;
+    color: $text-color;
   }
 
   &:hover {
-    color: $link-color-hover;
+    color: $text-color;
     outline: 0;
   }
 }
