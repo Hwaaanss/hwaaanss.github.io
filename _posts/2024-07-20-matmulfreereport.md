@@ -76,6 +76,51 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 2. **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
 3. **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
+- **GRU 기반 Token Mixer**
+  GRU(Gated Recurrent Unit)는 순환 신경망(RNN)의 변형으로, LSTM(Long Short-Term Memory)보다 단순하면서 유사한 성능을 제공하는 구조이다. 본 논문에서는 GRU를 기반으로 곱셈 연산을 배제하고 요소별 연산과 누적 덧셈으로 구성된 **MatMul-Free GRU(MLGRU)**를 설계하였다.
+
+- **표준 GRU 구조**
+  기존 GRU는 입력 $x_t$와 이전 은닉 상태 $h_{t-1}$을 사용하여 여러 게이트를 계산한다. 표준 GRU의 수식은 다음과 같다:
+
+  - **Reset Gate**  
+    $$ r_t = \sigma(x_t W_{xr} + h_{t-1} W_{hr} + b_r) $$  
+    여기서 \( r_t \)는 리셋 게이트로, 이전 은닉 상태 \( h_{t-1} \)의 정보 유지 비율을 결정한다.
+
+  - **Forget Gate**  
+    $$ f_t = \sigma(x_t W_{xf} + h_{t-1} W_{hf} + b_f) $$ 
+    $f_t$는 망각 게이트로, 이전 은닉 상태 $h_{t-1}$가 새로운 은닉 상태로 얼마나 전달될지를 결정한다.
+
+  - **Candidate Hidden State**  
+    $$ c_t = \tanh(x_t W_{xc} + (r_t \odot h_{t-1}) W_{cc} + b_c) $$  
+    리셋 게이트의 결과 $r_t$를 바탕으로 생성된 후보 은닉 상태 $c_t$이다.
+
+  - **Final Hidden State**  
+    $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$ 
+    망각 게이트와 후보 은닉 상태 $c_t$를 활용하여 최종 은닉 상태 $h_t$를 업데이트한다.
+
+- **MatMul-Free GRU (MLGRU) 구조**
+  MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
+
+  - **Forget Gate**  
+   $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
+   여기서 $W_f$는 삼진 가중치로 구성되어 있다.
+
+  - **Candidate Hidden State**  
+   $$ c_t = \tau(x_t \odot W_c + b_c) $$ 
+   여기서 $\tau$는 SiLU(Sigmoid Linear Unit) 활성화 함수이다.
+
+  - **Final Hidden State**  
+   $$ h_t = f_t \odot h_{t-1} + (1 - f_t) \odot c_t $$  
+   망각 게이트 $f_t$와 후보 은닉 상태 $c_t$를 기반으로 최종 은닉 상태 $h_t$를 결정한다.
+
+  - **Output Gate**  
+   $$ g_t = \sigma(x_t \odot W_g + b_g) $$
+   $$ o'_t = g_t \odot h_t $$
+   $$ o_t = o'_t \odot W_o + b_o $$
+   여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다.
+
+MatMul-Free GRU는 곱셈 없이 작동하면서도 기존 GRU의 정보 처리 능력을 유지하며, 병렬 처리를 지원하여 하드웨어 효율성을 높인다.
+
 ### 실험 데이터 및 환경
 - **모델 파라미터 크기**: 370M, 1.3B, 2.7B 파라미터로 모델을 구성하여, 각 크기별로 효율성과 성능을 검증함.
 - **훈련 및 테스트 데이터**: SlimPajama 데이터셋을 사용하여 370M 모델에는 15억 개, 1.3B와 2.7B 모델에는 100억 개의 토큰으로 학습.
