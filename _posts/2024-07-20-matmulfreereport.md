@@ -45,8 +45,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 ## 4. 연구 방법 및 실험 설계
 
 ### 사용된 방법론 및 모델 구조
-\begin{enumerate}
-  \item **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈과 뺄셈으로 대체했다.
+$\text{1.}$ **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈과 뺄셈으로 대체했다.
   
   - **Ternary Weights의 정의 및 동작 방식**  
     Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
@@ -78,9 +77,9 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
       - $O \leftarrow Ỹ ⊛ W̃ + b$
   
   - 여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
-  
-  \item **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
-  \item **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
+
+$\text{2.}$ **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
+$\text{3.}$ **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
   - **GRU 기반 Token Mixer**
     GRU(Gated Recurrent Unit)는 순환 신경망(RNN)의 변형으로, LSTM(Long Short-Term Memory)보다 단순하면서 유사한 성능을 제공하는 구조이다. 본 논문에서는 GRU를 기반으로 곱셈 연산을 배제하고 요소별 연산과 누적 덧셈으로 구성된 **MatMul-Free GRU(MLGRU)**를 설계하였다.
@@ -124,7 +123,6 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
       $$ o'_t = g_t \odot h_t $$
       $$ o_t = o'_t \odot W_o + b_o $$ \\
       여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다. **출력 게이트**는 최종 은닉 상태 $h_t$에 대한 가중치를 조절하여 출력 $o_t$를 생성한다. 이를 통해 모델은 선택적으로 은닉 상태의 정보를 출력으로 반영할 수 있으며, 출력 단계에서도 곱셈 없이 연산이 이루어져 하드웨어 자원을 효율적으로 사용할 수 있다.
-\end{enumerate}
 
 #### 고찰 및 추가 설명
 MatMul-Free GRU는 전통적인 GRU와 비교해 단순화된 구조로, 하드웨어에서 효율적으로 실행될 수 있도록 설계되었다. 곱셈을 제거함으로써 메모리 대역폭과 전력 소모를 줄이는 데 큰 장점이 있으며, 삼진 가중치를 사용해 학습의 복잡성을 줄이면서도 성능 저하를 최소화할 수 있다. 이러한 설계는 대규모 모델을 저전력 환경에서 실행할 때 매우 유리하며, FPGA나 ASIC 같은 특수 하드웨어 가속기에서 높은 효율성을 발휘할 수 있다.
