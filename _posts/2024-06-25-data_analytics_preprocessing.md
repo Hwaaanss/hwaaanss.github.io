@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "데이터 분석의 기초: 머신러닝 문제와 데이터 전처리"
+title: "[데이터 분석] 2. 머신러닝 문제와 데이터 전처리"
 excerpt: "데이터 분석에서 다루는 주요 머신러닝 문제와 데이터 전처리 과정"
 mathjax: true
 toc: true
