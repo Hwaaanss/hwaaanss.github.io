@@ -66,7 +66,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
       3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
   
     - **Activation Quantization**
-      - $s \leftarrow \frac{127}{\max(|X|)}$
+      - \\( s \leftarrow \frac{1}{\text{mean}(\left| W \right|)} \\)
       - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
 
     - **Weight Quantization**
