@@ -79,6 +79,9 @@ $\text{1.}$ **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖
   - 여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
 
 ![gru](/images/2024-07-20-matmulfreereport/gru.png) \\
+\begin{flushright}
+출처: 논문 Scalable MatMul-free Language Modeling p.5
+\end{flushright}
 $\text{2.}$ **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다. \\
 $\text{3.}$ **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
