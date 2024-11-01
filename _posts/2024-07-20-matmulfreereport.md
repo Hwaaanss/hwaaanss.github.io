@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "논문 리뷰: Scalable MatMul-free Language Modeling by hwaaanss"
+title: "논문 리뷰: Scalable MatMul-free Language Modeling"
 excerpt: "행렬 연산을 없앤 언어 모델에 대한 논문 리뷰"
 mathjax: true
 toc: true
