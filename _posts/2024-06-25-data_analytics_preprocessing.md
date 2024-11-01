@@ -6,7 +6,7 @@ mathjax: true
 toc: true
 toc_sticky: true
 toc_label: "Basic of Data Analytics"
-categories: Data_Science
+categories: Machine_Learning
 tag: [DataScience, ML, Preprocessing]
 ---
 

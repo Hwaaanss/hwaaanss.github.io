@@ -6,8 +6,8 @@ mathjax: true
 toc: true
 toc_sticky: true
 toc_label: "Data Analytics Overview"
-categories: Data_Science
-tag: [DataScience]
+categories: Machine_Learning
+tag: [DataScience, ML]
 ---
 
 ## 1. 데이터 분석의 시대 흐름
