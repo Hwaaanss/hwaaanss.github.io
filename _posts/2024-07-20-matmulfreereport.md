@@ -46,38 +46,38 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 
 ### 사용된 방법론 및 모델 구조
 1. **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈과 뺄셈으로 대체했다.
-
+  
   - **Ternary Weights의 정의 및 동작 방식**  
     Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
 
        $$ y = x \odot W = \sum_{j=1}^{d} x_j W_{ij} $$
      
        이를 통해 행렬 곱셈 없이도 가중치를 학습하며, 메모리 사용량과 전력 소모를 크게 줄일 수 있다.
-
+  
   - **메모리 및 전력 효율성**  
     Ternary Weights는 덧셈과 뺄셈만으로 연산을 수행하므로, 전력 소모가 줄어들고 메모리 절감 효과가 크다. 특히, 덧셈 연산만 포함되므로 자원 소모가 적은 저전력 하드웨어에서도 효율적으로 구동할 수 있다.
-
+  
   - **안정성 향상을 위한 RMSNorm과 Fused BitLinear 레이어**  
     MatMul-free 구조에서 가중치 불안정을 해결하기 위해 RMSNorm과 Fused BitLinear 레이어가 도입되었다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. Fused BitLinear 알고리즘은 RMSNorm과 가중치 정규화 과정을 결합하여 메모리 접근 시간을 줄이고 연산 효율을 높이는 데 기여한다. 이 알고리즘은 입력 `X`의 평균과 분산을 계산하여 RMS 정규화를 수행하며, 정규화된 활성화 값 `Ỹ`와 가중치 `W`는 양자화 과정을 통해 메모리 사용량을 최적화하고 연산 비용을 줄이는 데 기여한다. 양자화된 활성화와 가중치는 단순한 덧셈 및 뺄셈 연산으로 구성되어 매트릭스 곱셈을 대체하고, 하드웨어 내에서 효율적인 처리를 가능하게 한다.
-
+  
     - **Forward Pass**
       1. $\mu, \sigma^2 \leftarrow \text{mean}(X), \text{variance}(X)$
       2. $r \leftarrow \frac{1}{\sqrt{\sigma^2 + \epsilon}}$
       3. $Ỹ \leftarrow \mathrm{activation\_quant}(r(X - \mu))$
-  
+    
     - **Activation Quantization**
       - $s \leftarrow \frac{127}{\text{max}(\left\vert X \right\vert)}$
       - $X̃ \leftarrow \text{round}(sX)$, clamped to range $[-128, 127]$
-
+  
     - **Weight Quantization**
       - $s \leftarrow \frac{1}{\text{mean}(\left\vert W \right\vert)}$
       - $W̃ \leftarrow \text{round}(sW)$, clamped to range $[-1, 1]$
-  
+   
     - **Result Computation**
       - $O \leftarrow Ỹ ⊛ W̃ + b$
-
+  
   - 여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
-
+  
 2. **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
 3. **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
@@ -104,7 +104,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
       최종 은닉 상태 $h_t$는 망각 게이트 $f_t$의 값과 후보 은닉 상태 $c_t$를 결합하여 이전 은닉 상태 $h_{t-1}$과 새롭게 생성된 상태를 혼합한 결과이다. $f_t$는 이전 은닉 상태 $h_{t-1}$을 얼마나 유지할지를 결정하며, 나머지 부분 $(1 - f_t)$는 새로 계산된 후보 상태 $c_t$가 얼마나 반영될지를 결정한다. 이 gate는 LSTM과 약간의 차이점이 있는데, GRU는 LSTM과 달리 별도의 cell state 없이 최종 은닉 상태 $h_t$가 직접 정보 저장과 출력 역할을 수행하게 된다.
 
   - **MatMul-Free GRU (MLGRU) 구조**
-    MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
+      MatMul-Free GRU는 곱셈 연산을 제거하고, 단순 덧셈 및 뺄셈 연산으로 대체하여 효율성을 높인 구조이다. 이를 위해 모든 가중치 \( W \)는 삼진 가중치로 제한되며, 이 구조는 다음과 같은 연산으로 이루어진다:
 
     - **Forget Gate**  
       $$ f_t = \sigma(x_t \odot W_f + b_f) $$  
@@ -121,7 +121,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
     - **Output Gate**  
       $$ g_t = \sigma(x_t \odot W_g + b_g) $$
       $$ o'_t = g_t \odot h_t $$
-      $$ o_t = o'_t \odot W_o + b_o $$
+      $$ o_t = o'_t \odot W_o + b_o $$ 
       여기서 $W_o$ 또한 삼진 가중치로 이루어져 있으며, $o_t$는 최종 출력이다. **출력 게이트**는 최종 은닉 상태 $h_t$에 대한 가중치를 조절하여 출력 $o_t$를 생성한다. 이를 통해 모델은 선택적으로 은닉 상태의 정보를 출력으로 반영할 수 있으며, 출력 단계에서도 곱셈 없이 연산이 이루어져 하드웨어 자원을 효율적으로 사용할 수 있다.
 
 #### 고찰 및 추가 설명
