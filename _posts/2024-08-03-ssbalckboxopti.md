@@ -1,6 +1,12 @@
 ---
 layout: single
 title: "2024 Samsung AI Challenge : Black-box Optimization 24.08.03 리더보드 4위"
+mathjax: true
+toc: true
+toc_sticky: true
+toc_label: Code
+categories: Dacon
+tag: [AI, ML, Competition]
 ---
 
 
