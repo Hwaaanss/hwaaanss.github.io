@@ -7,7 +7,7 @@ toc: true
 toc_sticky: true
 toc_label: "Data Analytics Overview"
 categories: Data_Science
-tag: [DataScience, AI, ML]
+tag: [DataScience]
 ---
 
 ## 1. 데이터 분석의 시대 흐름
