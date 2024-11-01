@@ -66,3 +66,7 @@ A 전자는 Rule-based 모델을 Deep Learning 모델로 전환하고자 하였�
 
 ### 5.2 Data-Centric Approach의 중요성
 모델의 성능이 기대에 미치지 못할 때는 알고리즘을 탓하기보다 데이터 자체를 점검하는 것이 우선이다. 이 접근법은 향후 데이터 분석 및 AI 프로젝트의 핵심 전략으로 자리 잡을 것이다.
+
+
+#### 출처
+패스트 캠퍼스 : 50개 프로젝트로 완벽하게 끝내는 머신러닝 시그니쳐 (https://fastcampus.co.kr/data_online_msignature)
