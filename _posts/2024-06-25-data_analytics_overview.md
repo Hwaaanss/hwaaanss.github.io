@@ -1,12 +1,12 @@
 ---
 layout: single
-title: "데이터 분석 입문: AI/ML 시대 흐름과 실무 사례"
+title: "[데이터 분석] AI/ML 시대 흐름과 실무 사례"
 excerpt: "AI/ML 시대의 흐름과 데이터 분석 성공 및 실패 사례"
 mathjax: true
 toc: true
 toc_sticky: true
 toc_label: "Data Analytics Overview"
-categories: Data_Analytics
+categories: Data_Science
 tag: [DataScience, AI, ML]
 ---
 
