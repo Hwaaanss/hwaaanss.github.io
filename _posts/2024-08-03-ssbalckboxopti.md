@@ -1,6 +1,7 @@
 ---
 layout: single
 title: "2024 Samsung AI Challenge : Black-box Optimization 24.08.03 리더보드 4위"
+excerpt: "삼성 Blackbox Optimization 경진대회 진행사항 1"
 mathjax: true
 toc: true
 toc_sticky: true
