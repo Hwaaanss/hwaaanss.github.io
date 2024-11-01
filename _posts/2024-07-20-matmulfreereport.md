@@ -45,7 +45,7 @@ MatMul-free 구조를 통해 메모리 및 연산 자원을 절감하고, LLM의
 ## 4. 연구 방법 및 실험 설계
 
 ### 사용된 방법론 및 모델 구조
-$\text{1.}$ **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈   과 뺄셈으로 대체했다.
+\item **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖는 삼진 가중치를 사용하여, 기존의 MatMul 연산을 단순한 덧셈과 뺄셈으로 대체했다.
   
   - **Ternary Weights의 정의 및 동작 방식**  
     Ternary Weights는 가중치를 삼진 값 {-1, 0, +1}로 제한하여 곱셈을 단순한 덧셈과 뺄셈으로 대체하는 방식이다. 예를 들어, 기존 Dense 레이어의 행렬 곱셈은 $y = xW = \sum_{j=1}^{d} x_j W_{ij}$ 으로 표현되는데, 여기서 $W_{ij} \in \{-1, 0, +1\}$ 로 가중치를 제한하면 다음과 같이 간단한 덧셈과 뺄셈 연산으로 대체할 수 있다:
@@ -77,9 +77,9 @@ $\text{1.}$ **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖
       - $O \leftarrow Ỹ ⊛ W̃ + b$
   
   - 여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
-
-$\text{2.}$ **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로     대체했다.
-$\text{3.}$ **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해    정보 통합을 수행했다.
+  
+\item **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다.
+\item **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
   - **GRU 기반 Token Mixer**
     GRU(Gated Recurrent Unit)는 순환 신경망(RNN)의 변형으로, LSTM(Long Short-Term Memory)보다 단순하면서 유사한 성능을 제공하는 구조이다. 본 논문에서는 GRU를 기반으로 곱셈 연산을 배제하고 요소별 연산과 누적 덧셈으로 구성된 **MatMul-Free GRU(MLGRU)**를 설계하였다.
