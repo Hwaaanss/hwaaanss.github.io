@@ -39,7 +39,7 @@ Classification - Localization - Object Detection - Instance Segmantation 등의 
 차량에서 카메라 센서를 이용해 사람이나 장애물 식별
 OCR을 활용하여 아날로그에서 디지털로 전환에 편리성 제공(금융앱 신분증 촬영 등)
 
-### 2.2 NLP(Natural Language Processing, 자연어 처리)
+### 2.2 NLP(Natural Language Processingㄴ, 자연어 처리)
 컴퓨터가 사람의 언어를 처리하는 모든 기술로 대표적으로 감정 분석(Sentiment analysis), STT(Speech To Text), 챗봇과 같은 것들이 있다.
 
 #### 산업에서 활용
@@ -49,7 +49,7 @@ CS 업무 중 반복적인 질문, 복잡도가 높지 않은 질문들에 대�
 
 ---
 
-## 3. 데이터 전처리(Data Cleaning)
+## 3. 데이터 전처리(Data Cleaning)  
 
 ### 3.1 결측치 처리(Missing Value)
 실제 데이터에서는 **N/A**나 **Null** 값이 빈번하게 발생한다. 이런 값들은 분석에 방해가 될 수 있기 때문에 적절한 처리가 필요하다. 예를 들어, Zero 비율이 0.95 이상인 경우 해당 컬럼을 분석에서 제외하거나 필요성을 재검토해야 한다.
