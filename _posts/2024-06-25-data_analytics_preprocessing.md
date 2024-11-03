@@ -31,7 +31,7 @@ tag: [DataScience, ML, Preprocessing]
 
 ## 2. 머신러닝 문제의 접근 방식(2)
 
-### 1. 이미지 프로세싱(Image processing)
+### 2.1 이미지 프로세싱(Image processing)
 Classification - Localization - Object Detection - Instance Segmantation 등의 프로세스가 있다.
 
 #### 산업에서 활용
@@ -39,7 +39,7 @@ Classification - Localization - Object Detection - Instance Segmantation 등의 
 차량에서 카메라 센서를 이용해 사람이나 장애물 식별
 OCR을 활용하여 아날로그에서 디지털로 전환에 편리성 제공(금융앱 신분증 촬영 등)
 
-### 2. NLP(Natural Language Processing, 자연어 처리)
+### 2.2 NLP(Natural Language Processing, 자연어 처리)
 컴퓨터가 사람의 언어를 처리하는 모든 기술로 대표적으로 감정 분석(Sentiment analysis), STT(Speech To Text), 챗봇과 같은 것들이 있다.
 
 #### 산업에서 활용
