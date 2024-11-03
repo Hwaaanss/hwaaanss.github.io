@@ -105,3 +105,7 @@ output.to_csv('submission.csv', index=False)
 
 ### 뿌듯해서 찍은 데이콘 리더보드 
 ![leaderboard](../images/2024-08-03-ssbalckboxopti/leaderboard.png)
+
+
+### 24.08.08 
+학습 및 추론 데이터에 문제가 제기되어 대회 데이터가 변경되고, 리더보드가 초기화되어 내 기록이 사라졌다..
