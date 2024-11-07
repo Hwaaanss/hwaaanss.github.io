@@ -106,7 +106,7 @@ CS 업무 중 반복적인 질문, 복잡도가 높지 않은 질문들에 대�
 타겟 데이터의 불균형을 줄이기 위해 사용되며, 다수 클래스의 데이터를 줄이는 방식이다. **Random Undersampling**, **Near Miss**, **Tomek Links** 등이 있다.
 
 ### 6.2 Oversampling
-적은 클래스 데이터를 늘리는 방법이다. **SMOTE**(Synthetic Minority Oversampling Technique)는 KNN을 이용해 새로운 데이터를 생성하는 방법이다.
+적은 클래스 데이터를 늘리는 방법이다. 오버샘플링의 기법 중 **SMOTE**(Synthetic Minority Oversampling Technique)는 KNN(K-Nearest Neighbor)을 이용해 새로운 데이터를 생성하는 방법이다. 간단히 SMOTE에 대해 설명하면 수가 더 적은 클래스의 샘플을 선택하고, 각 선택된 샘플들의 이웃한 샘플들을 KNN 알고리즘으로 선택을 한다. 그 후 각 샘플들과 이웃한 샘플들 간의 차이를 계산해서 새로운 합성 샘플을 만들어 낸다. 
 
 ### 6.3 샘플링 결합 기법
 **SMOTEENN**과 **SMOTETOMEK**는 각각 **SMOTE**와 **ENN**, **Tomek Links**를 결합하여 데이터를 조정하는 기법이다.
@@ -116,10 +116,11 @@ CS 업무 중 반복적인 질문, 복잡도가 높지 않은 질문들에 대�
 ## 7. 학습 및 검증 데이터셋 분할(Train/Validation/Test)
 
 ### 7.1 데이터 분할 방법
-전체 데이터를 **Train** 데이터와 **Test** 데이터로 나눈다. **Validation** 데이터셋을 추가하여 모델의 성능을 평가하고, **Overfitting**을 방지할 수 있다.
+전체 데이터를 **Train** 데이터와 **Test** 데이터로 나눈다. **Validation** 데이터셋을 추가하여 모델의 성능을 평가하고, **Overfitting**을 방지할 수 있다. 하지만 학교 전공 수업에서는 약간 다르게 배웠는데, validation set을 따로 추가하는 것이 아니라 전제 데이터를 train set, validation set, test set 이렇게 세 가지로 나누게 된다는 것이다. 각각의 용도(?)는 train set을 통해 parameter 학습을 하고, validation set을 통해 hyperparameter 성능 평가를 하고, test set을 통해 신경망 범용 성능 평가를 하게 된다. 
 
 ### 7.2 교차 검증(Cross Validation)
-**K-fold Cross Validation**은 데이터셋을 K개의 폴드로 나눠 검증하는 기법이다. **StratifiedKFold**는 라벨의 분포를 고려하여 폴드를 나누는 방식이다.
+**K-fold Cross Validation**은 데이터셋을 K개의 폴드로 나눠 검증하는 기법이다. Train set을 K개로 나눈 후 하나를 validation 역할을 하게 되고, 나머지로 훈련을 하게 된다. 그 다음에는 또 다른 하나가 validation 역할을 하게 되고, 이를 반복하여 나온 각각의 성능 지표를 평균한다.  
+**StratifiedKFold**는 라벨의 분포를 고려하여 폴드를 나누는 방식이다. 불균형한 분포를 가진 레이블 데이터 집합을 위한 K-fold 빙식이다. 특정 레이블의 값이 너무 많거나 너무 적어서 데이터의 분포가 한쪽으로 치우치는 경우에 사용한다. **from sklearn.model_selection import cross_val_score**으로 불러와 cross_val_score()로 사용하게 되면 기본적으로 StratifiedKFold을 사용하기 때문에 편리하게 교차검증을 할 수 있다.
 
 ---
 
