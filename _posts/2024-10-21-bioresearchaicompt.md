@@ -85,5 +85,103 @@ test.csv 에만 있는 변이 정보 개수: 46622
 내가 내린 결론은 일단 언더샘플링이었다. 여러개의 속성값들을 나누자고 다른 값들을 복제해버리면 안 그래도 많은 분포를 가진 데이터가 더욱 불어날 것만 같았다. 그래서 추후에 SMOTE 기법을 사용해서 다시 오버샘플링을 하던가, 외부 데이터를 어떻게든 긁어오더라도 일단 언더샘플링을 하는 것이 나을 것이라 판단했다.
 
 ```python
+# 데이터 로드
+train = pd.read_csv("train.csv", header=0)
 
+# SUBCLASS 라벨 인코딩
+le_subclass = LabelEncoder()
+train['SUBCLASS'] = le_subclass.fit_transform(train['SUBCLASS'])
+for i, label in enumerate(le_subclass.classes_):
+    print(f"원래 레이블: {label}, 변환된 숫자: {i}")
+
+X = train.drop(columns=['SUBCLASS', 'ID']).copy()
+y_subclass = train['SUBCLASS']
+
+
+# 훈련 데이터 전처리
+def preprocessing_train(element):
+    # 띄어쓰기로 분리되어있는 element는 리스트로 쪼개기
+    if isinstance(element, str) and ' ' in element:
+        element = element.split()
+    
+    # 값이 한 개(문자열)인 경우
+    if isinstance(element, str):
+        if element[0] + element[-1] not in combination:
+            combination.append(element[0]+element[-1])  ## 알파벳이 아닌 * 와 같은 문자도 있었음
+        return np.where(element[0] == element[-1], 0, combination.index(element[0] + element[-1]))
+        
+    # 값이 여러개(리스트)인 경우
+    elif isinstance(element, list):
+         return preprocessing_train(element[0])
+
+# applymap으로 각 요소에 대해 함수 적용
+X_prep = X.applymap(preprocessing_train)
+
+# 변환된 데이터 확인
+print(X_prep)
+print('업데이트된 조합표')
+print(combination)
+X_prep.to_csv('preprocessing_data.csv')
 ```
+
+#### 전처리 결과는 아래와 같다.
+```python
+원래 레이블: ACC, 변환된 숫자: 0
+원래 레이블: BLCA, 변환된 숫자: 1
+원래 레이블: BRCA, 변환된 숫자: 2
+원래 레이블: CESC, 변환된 숫자: 3
+원래 레이블: COAD, 변환된 숫자: 4
+원래 레이블: DLBC, 변환된 숫자: 5
+원래 레이블: GBMLGG, 변환된 숫자: 6
+원래 레이블: HNSC, 변환된 숫자: 7
+원래 레이블: KIPAN, 변환된 숫자: 8
+원래 레이블: KIRC, 변환된 숫자: 9
+원래 레이블: LAML, 변환된 숫자: 10
+원래 레이블: LGG, 변환된 숫자: 11
+원래 레이블: LIHC, 변환된 숫자: 12
+원래 레이블: LUAD, 변환된 숫자: 13
+원래 레이블: LUSC, 변환된 숫자: 14
+원래 레이블: OV, 변환된 숫자: 15
+원래 레이블: PAAD, 변환된 숫자: 16
+원래 레이블: PCPG, 변환된 숫자: 17
+원래 레이블: PRAD, 변환된 숫자: 18
+원래 레이블: SARC, 변환된 숫자: 19
+원래 레이블: SKCM, 변환된 숫자: 20
+원래 레이블: STES, 변환된 숫자: 21
+원래 레이블: TGCT, 변환된 숫자: 22
+원래 레이블: THCA, 변환된 숫자: 23
+원래 레이블: THYM, 변환된 숫자: 24
+원래 레이블: UCEC, 변환된 숫자: 25
+/var/folders/46/hpx4mj4s13ncmcc1xwlb2rzh0000gn/T/ipykernel_5138/1906788633.py:36: FutureWarning: DataFrame.applymap has been deprecated. Use DataFrame.map instead.
+  X_prep = X.applymap(preprocessing_train)
+      A2M  AAAS  AADAT  AARS1  ABAT  ABCA1  ABCA2  ABCA3  ABCA4  ABCA5  ...  \
+0       0     0      0      0     0      0      0      0      0      0  ...   
+1       0     0      0      0     0      0      0      0      0      0  ...   
+2       0     0      0      0     0      0      0      0      0      0  ...   
+3       0     0      0      0     0      0      0      0      0      0  ...   
+4       0     0      0      0     0      0      0      0      0      0  ...   
+...   ...   ...    ...    ...   ...    ...    ...    ...    ...    ...  ...   
+6196    0     0      0      0     0      0      0      0      0      0  ...   
+6197    0     0      0      0     0      0      0      0      0      0  ...   
+6198    0     0      0      0     0      0      0      0      0      0  ...   
+6199    0     0      0      0     0      0      0      0      0      0  ...   
+6200    0     0      0      0     0      0      0      0      0      0  ...   
+
+      ZNF292  ZNF365  ZNF639  ZNF707  ZNFX1  ZNRF4  ZPBP  ZW10  ZWINT  ZYX  
+0          0       0       0       0      0      0     0     0      0    0  
+1          0       0       0       0      0      0     0     0      0    0  
+2          0       0       0       0      0      0     0     0      0    0  
+3          0       0       0       0      0      0     0     0      0    0  
+4          0       0       0       0      0      0     0     0      0    0  
+...      ...     ...     ...     ...    ...    ...   ...   ...    ...  ...  
+6196       0       0       0       0      0      0     0     0      0    0  
+6197       0       0       0       0      0      0     0     0      0    0  
+6198       0       0       0       0      0      0     0     0    513    0  
+6199       0       0       0       0      0      0     0     0      0    0  
+6200       0       0       0       0      0      0     0     0      0    0  
+
+[6201 rows x 4384 columns]
+업데이트된 조합표
+['WT', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ', 'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CQ', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DA', 'DB', 'DC', 'DD', 'DE', 'DF', 'DG', 'DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN', 'DO', 'DP', 'DQ', 'DR', 'DS', 'DT', 'DU', 'DV', 'DW', 'DX', 'DY', 'DZ', 'EA', 'EB', 'EC', 'ED', 'EE', 'EF', 'EG', 'EH', 'EI', 'EJ', 'EK', 'EL', 'EM', 'EN', 'EO', 'EP', 'EQ', 'ER', 'ES', 'ET', 'EU', 'EV', 'EW', 'EX', 'EY', 'EZ', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG', 'FH', 'FI', 'FJ', 'FK', 'FL', 'FM', 'FN', 'FO', 'FP', 'FQ', 'FR', 'FS', 'FT', 'FU', 'FV', 'FW', 'FX', 'FY', 'FZ', 'GA', 'GB', 'GC', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GJ', 'GK', 'GL', 'GM', 'GN', 'GO', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GV', 'GW', 'GX', 'GY', 'GZ', 'HA', 'HB', 'HC', 'HD', 'HE', 'HF', 'HG', 'HH', 'HI', 'HJ', 'HK', 'HL', 'HM', 'HN', 'HO', 'HP', 'HQ', 'HR', 'HS', 'HT', 'HU', 'HV', 'HW', 'HX', 'HY', 'HZ', 'IA', 'IB', 'IC', 'ID', 'IE', 'IF', 'IG', 'IH', 'II', 'IJ', 'IK', 'IL', 'IM', 'IN', 'IO', 'IP', 'IQ', 'IR', 'IS', 'IT', 'IU', 'IV', 'IW', 'IX', 'IY', 'IZ', 'JA', 'JB', 'JC', 'JD', 'JE', 'JF', 'JG', 'JH', 'JI', 'JJ', 'JK', 'JL', 'JM', 'JN', 'JO', 'JP', 'JQ', 'JR', 'JS', 'JT', 'JU', 'JV', 'JW', 'JX', 'JY', 'JZ', 'KA', 'KB', 'KC', 'KD', 'KE', 'KF', 'KG', 'KH', 'KI', 'KJ', 'KK', 'KL', 'KM', 'KN', 'KO', 'KP', 'KQ', 'KR', 'KS', 'KT', 'KU', 'KV', 'KW', 'KX', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LD', 'LE', 'LF', 'LG', 'LH', 'LI', 'LJ', 'LK', 'LL', 'LM', 'LN', 'LO', 'LP', 'LQ', 'LR', 'LS', 'LT', 'LU', 'LV', 'LW', 'LX', 'LY', 'LZ', 'MA', 'MB', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MI', 'MJ', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NB', 'NC', 'ND', 'NE', 'NF', 'NG', 'NH', 'NI', 'NJ', 'NK', 'NL', 'NM', 'NN', 'NO', 'NP', 'NQ', 'NR', 'NS', 'NT', 'NU', 'NV', 'NW', 'NX', 'NY', 'NZ', 'OA', 'OB', 'OC', 'OD', 'OE', 'OF', 'OG', 'OH', 'OI', 'OJ', 'OK', 'OL', 'OM', 'ON', 'OO', 'OP', 'OQ', 'OR', 'OS', 'OT', 'OU', 'OV', 'OW', 'OX', 'OY', 'OZ', 'PA', 'PB', 'PC', 'PD', 'PE', 'PF', 'PG', 'PH', 'PI', 'PJ', 'PK', 'PL', 'PM', 'PN', 'PO', 'PP', 'PQ', 'PR', 'PS', 'PT', 'PU', 'PV', 'PW', 'PX', 'PY', 'PZ', 'QA', 'QB', 'QC', 'QD', 'QE', 'QF', 'QG', 'QH', 'QI', 'QJ', 'QK', 'QL', 'QM', 'QN', 'QO', 'QP', 'QQ', 'QR', 'QS', 'QT', 'QU', 'QV', 'QW', 'QX', 'QY', 'QZ', 'RA', 'RB', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ', 'RK', 'RL', 'RM', 'RN', 'RO', 'RP', 'RQ', 'RR', 'RS', 'RT', 'RU', 'RV', 'RW', 'RX', 'RY', 'RZ', 'SA', 'SB', 'SC', 'SD', 'SE', 'SF', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SP', 'SQ', 'SR', 'SS', 'ST', 'SU', 'SV', 'SW', 'SX', 'SY', 'SZ', 'TA', 'TB', 'TC', 'TD', 'TE', 'TF', 'TG', 'TH', 'TI', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TP', 'TQ', 'TR', 'TS', 'TT', 'TU', 'TV', 'TW', 'TX', 'TY', 'TZ', 'UA', 'UB', 'UC', 'UD', 'UE', 'UF', 'UG', 'UH', 'UI', 'UJ', 'UK', 'UL', 'UM', 'UN', 'UO', 'UP', 'UQ', 'UR', 'US', 'UT', 'UU', 'UV', 'UW', 'UX', 'UY', 'UZ', 'VA', 'VB', 'VC', 'VD', 'VE', 'VF', 'VG', 'VH', 'VI', 'VJ', 'VK', 'VL', 'VM', 'VN', 'VO', 'VP', 'VQ', 'VR', 'VS', 'VT', 'VU', 'VV', 'VW', 'VX', 'VY', 'VZ', 'WA', 'WB', 'WC', 'WD', 'WE', 'WF', 'WG', 'WH', 'WI', 'WJ', 'WK', 'WL', 'WM', 'WN', 'WO', 'WP', 'WQ', 'WR', 'WS', 'WU', 'WV', 'WW', 'WX', 'WY', 'WZ', 'XA', 'XB', 'XC', 'XD', 'XE', 'XF', 'XG', 'XH', 'XI', 'XJ', 'XK', 'XL', 'XM', 'XN', 'XO', 'XP', 'XQ', 'XR', 'XS', 'XT', 'XU', 'XV', 'XW', 'XX', 'XY', 'XZ', 'YA', 'YB', 'YC', 'YD', 'YE', 'YF', 'YG', 'YH', 'YI', 'YJ', 'YK', 'YL', 'YM', 'YN', 'YO', 'YP', 'YQ', 'YR', 'YS', 'YT', 'YU', 'YV', 'YW', 'YX', 'YY', 'YZ', 'ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH', 'ZI', 'ZJ', 'ZK', 'ZL', 'ZM', 'ZN', 'ZO', 'ZP', 'ZQ', 'ZR', 'ZS', 'ZT', 'ZU', 'ZV', 'ZW', 'ZX', 'ZY', 'ZZ', 'R*', 'S*', 'E*', 'W*', 'Q*', 'Qs', 'Gs', 'Es', 'Ls', 'G*', 'Ns', 'Ds', 'Fs', 'C*', 'Ys', 'Ks', 'Ps', 'Y*', 'Vs', 'K*', 'Is', '1L', 'L*', 'Rs', 'Ts', 'As', 'Ss', 'Ws', 'Hs', '1I', 'Cs', '**', '3P', '3R', 'Ms', '4K', '4Y', '3L', '4A', '8Y', '4S', '-s', '3*', '5L', '7*', '7L', '7S', '2S', '4L', '8R', '2N', '1S', '1*', '3W', '5*', '1V', '9C', '1F', '5H', 'F*', '2K', '8I', '3F', 'T*', '1K', '5K', '3H', '1R', '2L', 'Rl', '2*', '5S', '6V', '6L', '8*', '1N', '2E', '3I', '8L', '*s', '9Y', '1C', '2T', '8K', '5C', '6C', '2Q', '2V', '5W', '5Y', '8S', '9P', 'I*', '1Y', '4N', '4*', '6*', '5F', '2R', '5M', '2C', '5I', 'V*', '4F', '1A', '3V', '7C', '4l', '8T', '9L', '4I', '4V', '3K', '8C', '2D', '8E', '7D', '9F', '1W', '4W', '2Y', '3S', '2l', '6Y', '9R', '2W', '7R', 'Ll', 'Nl', 'Kl', 'El', 'Tl', 'Gl', '4R', 'Sl', 'Fl', 'Il', 'Al', 'Vl', 'Cl', 'Hl', 'Pl', 'Ql', 'Yl', 'Dl', 'Ml', 'Wl', '7W', 'M1', '1l', '8l', '1H']
+```
+
