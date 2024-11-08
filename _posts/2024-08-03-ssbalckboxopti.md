@@ -7,7 +7,7 @@ toc: true
 toc_sticky: true
 toc_label: Code
 categories: Dacon
-tag: [AI, ML, Competition]
+tag: [AI, ML, Math, Competition]
 ---
 
 

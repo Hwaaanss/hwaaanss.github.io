@@ -7,23 +7,26 @@ toc: true
 toc_sticky: true
 toc_label: Code
 categories: Dacon
-tag: [AI, ML, Competition]
+tag: [AI, ML, Competition, Bio]
 ---
 
 ## Domain Knowledge
 먼저 ~~
 
-## Data Structure 분석
-대회 준비를 기간 초반부터 하지 못했었는데 토크 페이지를 보니 데이터 불균형과 훈련용 데이터에 없는 데이터(?)가 test 데이터에 있다는 말들이 있었다. 그래서 원래도 해야되지만 데이터의 구조를 먼저 파악하기 위해 class와 데이터들을 확인했다.
-
-### 라이브러리 호출
-
+## 코드
+먼저 필요한 라이브러리를 호출한다.
 ```python
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import LabelEncoder, OrdinalEncoder
+from sklearn.model_selection import train_test_split
+import xgboost as xgb
+import string
+import itertools
 ```
 
-### Train data 확인
+### Data Structure 분석
+대회 준비를 기간 초반부터 하지 못했었는데 토크 페이지를 보니 데이터 불균형과 훈련용 데이터에 없는 데이터(?)가 test 데이터에 있다는 말들이 있었다. 그래서 원래도 해야되지만 데이터의 구조를 먼저 파악하기 위해 class와 데이터들을 확인했다.
 훈련용 데이터를 엑셀로 열어보니 한 칸에 여러개의 값이 들어가 있는 것을 발견했다. list에 WT가 아닌 모든 값을 넣은 후 중복을 제거해 개수를 파악했다.
 
 ```python
@@ -76,19 +79,27 @@ print('test.csv 에만 있는 변이 정보 개수:',len(only_test))
 그러면 결과는 아래와 같이 나온다.
 test.csv 에만 있는 변이 정보 개수: 46622
 
-## 아미노산 변이 정보 매핑
-~~
-
-
-## Data Preprocessing
-위에서 확인했듯이 하나의 속성에 여러 값이 들어가 있는 경우가 있으므로 이를 먼저 해결해야한다. 제 1정규화를 해야하는데 여기서 고민이 많이 되었다. 속성 하나에 값이 하나인 것들은 복사하고 여러개인 것들은 나눠서 오버샘플링처럼 해야 되나, 여러개의 속성값들 중 하나만 남기는 언더샘플링을 해야 하나 말이다.
-내가 내린 결론은 일단 언더샘플링이었다. 여러개의 속성값들을 나누자고 다른 값들을 복제해버리면 안 그래도 많은 분포를 가진 데이터가 더욱 불어날 것만 같았다. 그래서 추후에 SMOTE 기법을 사용해서 다시 오버샘플링을 하던가, 외부 데이터를 어떻게든 긁어오더라도 일단 언더샘플링을 하는 것이 나을 것이라 판단했다.
+### 아미노산 변이 정보 매핑
+도메인 지식이 부족해서 교수님께 조언을 구했는데, 변이 정보를 먼저 매핑을 하는게 좋겠다고 하셨다. 변이 정보에는 (알파벳)(약 3자리 숫자)(알파벳) 형태를 갖고 있는데, from to에 포커스를 맞춰서 매핑하기로 했다. 변이가 일어나지 않은 WT와 from to 가 같은 A->A 와 같은 경우에서는 0으로, 나머지 A->B와 같은 경우들은 순서대로 숫자를 부여했다.
+먼저 조합표를 만들었다.
 
 ```python
-# 데이터 로드
+alphabet1, alphabet2 = list(string.ascii_uppercase), list(string.ascii_uppercase)
+combination = ['WT']
+for a1 in alphabet1:
+    for a2 in alphabet2:
+        if a1+a2 != 'WT':
+            combination.append(a1+a2)
+```
+
+### Data Preprocessing
+위에서 확인했듯이 하나의 속성에 여러 값이 들어가 있는 경우가 있으므로 이를 먼저 해결해야한다. 제 1정규화를 해야하는데 여기서 고민이 많이 되었다. 속성 하나에 값이 하나인 것들은 복사하고 여러개인 것들은 나눠서 오버샘플링처럼 해야 되나, 여러개의 속성값들 중 하나만 남기는 언더샘플링을 해야 하나 말이다.
+내가 내린 결론은 일단 언더샘플링이었다. 여러개의 속성값들을 나누자고 다른 값들을 복제해버리면 안 그래도 많은 분포를 가진 데이터가 더욱 불어날 것만 같았다. 그래서 추후에 SMOTE 기법을 사용해서 다시 오버샘플링을 하던가, 외부 데이터를 어떻게든 긁어오더라도 일단 언더샘플링을 하는 것이 나을 것이라 판단했다.
+먼저 전처리 전에 subclass 라벨 인코딩을 한 이후, 전처리를 진행한다. 전처리 과정에서는 위에서 만든 조합표에 훈련 데이터를 맵핑한다. 속성 하나에 값이 여러개인 경우는 첫번째 값을 사용하도록 했다.
+
+```python
 train = pd.read_csv("train.csv", header=0)
 
-# SUBCLASS 라벨 인코딩
 le_subclass = LabelEncoder()
 train['SUBCLASS'] = le_subclass.fit_transform(train['SUBCLASS'])
 for i, label in enumerate(le_subclass.classes_):
@@ -97,8 +108,6 @@ for i, label in enumerate(le_subclass.classes_):
 X = train.drop(columns=['SUBCLASS', 'ID']).copy()
 y_subclass = train['SUBCLASS']
 
-
-# 훈련 데이터 전처리
 def preprocessing_train(element):
     # 띄어쓰기로 분리되어있는 element는 리스트로 쪼개기
     if isinstance(element, str) and ' ' in element:
@@ -114,10 +123,8 @@ def preprocessing_train(element):
     elif isinstance(element, list):
          return preprocessing_train(element[0])
 
-# applymap으로 각 요소에 대해 함수 적용
 X_prep = X.applymap(preprocessing_train)
 
-# 변환된 데이터 확인
 print(X_prep)
 print('업데이트된 조합표')
 print(combination)
@@ -185,3 +192,82 @@ X_prep.to_csv('preprocessing_data.csv')
 ['WT', 'AA', 'AB', 'AC', 'AD', 'AE', 'AF', 'AG', 'AH', 'AI', 'AJ', 'AK', 'AL', 'AM', 'AN', 'AO', 'AP', 'AQ', 'AR', 'AS', 'AT', 'AU', 'AV', 'AW', 'AX', 'AY', 'AZ', 'BA', 'BB', 'BC', 'BD', 'BE', 'BF', 'BG', 'BH', 'BI', 'BJ', 'BK', 'BL', 'BM', 'BN', 'BO', 'BP', 'BQ', 'BR', 'BS', 'BT', 'BU', 'BV', 'BW', 'BX', 'BY', 'BZ', 'CA', 'CB', 'CC', 'CD', 'CE', 'CF', 'CG', 'CH', 'CI', 'CJ', 'CK', 'CL', 'CM', 'CN', 'CO', 'CP', 'CQ', 'CR', 'CS', 'CT', 'CU', 'CV', 'CW', 'CX', 'CY', 'CZ', 'DA', 'DB', 'DC', 'DD', 'DE', 'DF', 'DG', 'DH', 'DI', 'DJ', 'DK', 'DL', 'DM', 'DN', 'DO', 'DP', 'DQ', 'DR', 'DS', 'DT', 'DU', 'DV', 'DW', 'DX', 'DY', 'DZ', 'EA', 'EB', 'EC', 'ED', 'EE', 'EF', 'EG', 'EH', 'EI', 'EJ', 'EK', 'EL', 'EM', 'EN', 'EO', 'EP', 'EQ', 'ER', 'ES', 'ET', 'EU', 'EV', 'EW', 'EX', 'EY', 'EZ', 'FA', 'FB', 'FC', 'FD', 'FE', 'FF', 'FG', 'FH', 'FI', 'FJ', 'FK', 'FL', 'FM', 'FN', 'FO', 'FP', 'FQ', 'FR', 'FS', 'FT', 'FU', 'FV', 'FW', 'FX', 'FY', 'FZ', 'GA', 'GB', 'GC', 'GD', 'GE', 'GF', 'GG', 'GH', 'GI', 'GJ', 'GK', 'GL', 'GM', 'GN', 'GO', 'GP', 'GQ', 'GR', 'GS', 'GT', 'GU', 'GV', 'GW', 'GX', 'GY', 'GZ', 'HA', 'HB', 'HC', 'HD', 'HE', 'HF', 'HG', 'HH', 'HI', 'HJ', 'HK', 'HL', 'HM', 'HN', 'HO', 'HP', 'HQ', 'HR', 'HS', 'HT', 'HU', 'HV', 'HW', 'HX', 'HY', 'HZ', 'IA', 'IB', 'IC', 'ID', 'IE', 'IF', 'IG', 'IH', 'II', 'IJ', 'IK', 'IL', 'IM', 'IN', 'IO', 'IP', 'IQ', 'IR', 'IS', 'IT', 'IU', 'IV', 'IW', 'IX', 'IY', 'IZ', 'JA', 'JB', 'JC', 'JD', 'JE', 'JF', 'JG', 'JH', 'JI', 'JJ', 'JK', 'JL', 'JM', 'JN', 'JO', 'JP', 'JQ', 'JR', 'JS', 'JT', 'JU', 'JV', 'JW', 'JX', 'JY', 'JZ', 'KA', 'KB', 'KC', 'KD', 'KE', 'KF', 'KG', 'KH', 'KI', 'KJ', 'KK', 'KL', 'KM', 'KN', 'KO', 'KP', 'KQ', 'KR', 'KS', 'KT', 'KU', 'KV', 'KW', 'KX', 'KY', 'KZ', 'LA', 'LB', 'LC', 'LD', 'LE', 'LF', 'LG', 'LH', 'LI', 'LJ', 'LK', 'LL', 'LM', 'LN', 'LO', 'LP', 'LQ', 'LR', 'LS', 'LT', 'LU', 'LV', 'LW', 'LX', 'LY', 'LZ', 'MA', 'MB', 'MC', 'MD', 'ME', 'MF', 'MG', 'MH', 'MI', 'MJ', 'MK', 'ML', 'MM', 'MN', 'MO', 'MP', 'MQ', 'MR', 'MS', 'MT', 'MU', 'MV', 'MW', 'MX', 'MY', 'MZ', 'NA', 'NB', 'NC', 'ND', 'NE', 'NF', 'NG', 'NH', 'NI', 'NJ', 'NK', 'NL', 'NM', 'NN', 'NO', 'NP', 'NQ', 'NR', 'NS', 'NT', 'NU', 'NV', 'NW', 'NX', 'NY', 'NZ', 'OA', 'OB', 'OC', 'OD', 'OE', 'OF', 'OG', 'OH', 'OI', 'OJ', 'OK', 'OL', 'OM', 'ON', 'OO', 'OP', 'OQ', 'OR', 'OS', 'OT', 'OU', 'OV', 'OW', 'OX', 'OY', 'OZ', 'PA', 'PB', 'PC', 'PD', 'PE', 'PF', 'PG', 'PH', 'PI', 'PJ', 'PK', 'PL', 'PM', 'PN', 'PO', 'PP', 'PQ', 'PR', 'PS', 'PT', 'PU', 'PV', 'PW', 'PX', 'PY', 'PZ', 'QA', 'QB', 'QC', 'QD', 'QE', 'QF', 'QG', 'QH', 'QI', 'QJ', 'QK', 'QL', 'QM', 'QN', 'QO', 'QP', 'QQ', 'QR', 'QS', 'QT', 'QU', 'QV', 'QW', 'QX', 'QY', 'QZ', 'RA', 'RB', 'RC', 'RD', 'RE', 'RF', 'RG', 'RH', 'RI', 'RJ', 'RK', 'RL', 'RM', 'RN', 'RO', 'RP', 'RQ', 'RR', 'RS', 'RT', 'RU', 'RV', 'RW', 'RX', 'RY', 'RZ', 'SA', 'SB', 'SC', 'SD', 'SE', 'SF', 'SG', 'SH', 'SI', 'SJ', 'SK', 'SL', 'SM', 'SN', 'SO', 'SP', 'SQ', 'SR', 'SS', 'ST', 'SU', 'SV', 'SW', 'SX', 'SY', 'SZ', 'TA', 'TB', 'TC', 'TD', 'TE', 'TF', 'TG', 'TH', 'TI', 'TJ', 'TK', 'TL', 'TM', 'TN', 'TO', 'TP', 'TQ', 'TR', 'TS', 'TT', 'TU', 'TV', 'TW', 'TX', 'TY', 'TZ', 'UA', 'UB', 'UC', 'UD', 'UE', 'UF', 'UG', 'UH', 'UI', 'UJ', 'UK', 'UL', 'UM', 'UN', 'UO', 'UP', 'UQ', 'UR', 'US', 'UT', 'UU', 'UV', 'UW', 'UX', 'UY', 'UZ', 'VA', 'VB', 'VC', 'VD', 'VE', 'VF', 'VG', 'VH', 'VI', 'VJ', 'VK', 'VL', 'VM', 'VN', 'VO', 'VP', 'VQ', 'VR', 'VS', 'VT', 'VU', 'VV', 'VW', 'VX', 'VY', 'VZ', 'WA', 'WB', 'WC', 'WD', 'WE', 'WF', 'WG', 'WH', 'WI', 'WJ', 'WK', 'WL', 'WM', 'WN', 'WO', 'WP', 'WQ', 'WR', 'WS', 'WU', 'WV', 'WW', 'WX', 'WY', 'WZ', 'XA', 'XB', 'XC', 'XD', 'XE', 'XF', 'XG', 'XH', 'XI', 'XJ', 'XK', 'XL', 'XM', 'XN', 'XO', 'XP', 'XQ', 'XR', 'XS', 'XT', 'XU', 'XV', 'XW', 'XX', 'XY', 'XZ', 'YA', 'YB', 'YC', 'YD', 'YE', 'YF', 'YG', 'YH', 'YI', 'YJ', 'YK', 'YL', 'YM', 'YN', 'YO', 'YP', 'YQ', 'YR', 'YS', 'YT', 'YU', 'YV', 'YW', 'YX', 'YY', 'YZ', 'ZA', 'ZB', 'ZC', 'ZD', 'ZE', 'ZF', 'ZG', 'ZH', 'ZI', 'ZJ', 'ZK', 'ZL', 'ZM', 'ZN', 'ZO', 'ZP', 'ZQ', 'ZR', 'ZS', 'ZT', 'ZU', 'ZV', 'ZW', 'ZX', 'ZY', 'ZZ', 'R*', 'S*', 'E*', 'W*', 'Q*', 'Qs', 'Gs', 'Es', 'Ls', 'G*', 'Ns', 'Ds', 'Fs', 'C*', 'Ys', 'Ks', 'Ps', 'Y*', 'Vs', 'K*', 'Is', '1L', 'L*', 'Rs', 'Ts', 'As', 'Ss', 'Ws', 'Hs', '1I', 'Cs', '**', '3P', '3R', 'Ms', '4K', '4Y', '3L', '4A', '8Y', '4S', '-s', '3*', '5L', '7*', '7L', '7S', '2S', '4L', '8R', '2N', '1S', '1*', '3W', '5*', '1V', '9C', '1F', '5H', 'F*', '2K', '8I', '3F', 'T*', '1K', '5K', '3H', '1R', '2L', 'Rl', '2*', '5S', '6V', '6L', '8*', '1N', '2E', '3I', '8L', '*s', '9Y', '1C', '2T', '8K', '5C', '6C', '2Q', '2V', '5W', '5Y', '8S', '9P', 'I*', '1Y', '4N', '4*', '6*', '5F', '2R', '5M', '2C', '5I', 'V*', '4F', '1A', '3V', '7C', '4l', '8T', '9L', '4I', '4V', '3K', '8C', '2D', '8E', '7D', '9F', '1W', '4W', '2Y', '3S', '2l', '6Y', '9R', '2W', '7R', 'Ll', 'Nl', 'Kl', 'El', 'Tl', 'Gl', '4R', 'Sl', 'Fl', 'Il', 'Al', 'Vl', 'Cl', 'Hl', 'Pl', 'Ql', 'Yl', 'Dl', 'Ml', 'Wl', '7W', 'M1', '1l', '8l', '1H']
 ```
 
+### Train & Save model
+train set과 validation set을 나눴고, XGBoost를 사용해서 모델을 훈련 시켰다.
+
+```python
+X_train, X_val, y_train, y_val = train_test_split(X_prep, y_subclass, test_size=0.2, random_state=42)
+
+model = xgb.XGBClassifier(
+    n_estimators=1000,
+    learning_rate=0.1,
+    max_depth=7,
+    random_state=42,
+    eval_metric='mlogloss',
+    reg_lambda=15,
+    subsample=0.5, 
+    colsample_bytree=0.5
+)
+
+eval_set = [(X_val, y_val)]
+
+model.fit(X_train, y_train, eval_set=eval_set, verbose=100)
+
+model_filename = './model_saved/xgboost_model.bin'
+model.save_model(model_filename)
+print(f"모델이 {model_filename}에 저장되었습니다.")
+```
+
+#### 결과는 아래와 같다.
+```python
+[0]	validation_0-mlogloss:3.19918
+[100]	validation_0-mlogloss:2.16103
+[200]	validation_0-mlogloss:2.06376
+[300]	validation_0-mlogloss:2.03879
+[400]	validation_0-mlogloss:2.03872
+[500]	validation_0-mlogloss:2.04382
+[600]	validation_0-mlogloss:2.05375
+[700]	validation_0-mlogloss:2.06549
+[800]	validation_0-mlogloss:2.08133
+[900]	validation_0-mlogloss:2.09596
+[999]	validation_0-mlogloss:2.11034
+```
+
+역시 하이퍼파라미터 튜닝도 제대로 되어있지 않고, 다양한 머신러닝 기법들을 적용하지 않은 터라 validation 성능조차 잘 나오지 않는다.
+
+### Test data preprocessing & Test
+테스트 데이터 역시 훈련용 데이터를 전처리 한 방식과 같은 방식으로 전처리를 해주고, 추론을 해서 결과파일을 저장하도록 했다.
+
+```python
+test = pd.read_csv("test.csv", header=0)
+
+def preprocessing_test(element):
+    # 띄어쓰기로 분리되어있는 element는 리스트로 쪼개기
+    if isinstance(element, str) and ' ' in element:
+        element = element.split()
+    
+    # 값이 한 개(문자열)인 경우
+    if isinstance(element, str):
+        if element[0] + element[-1] not in combination:
+            combination.append(element[0] + element[-1])  ## 알파벳이 아닌 *와 같은 문자도 있었음
+        return np.where(element[0] == element[-1], 0, combination.index(element[0] + element[-1]))
+        
+    elif isinstance(element, list):
+         return preprocessing_test(element[0])
+
+test_X = test.drop(columns=['ID']).copy()
+X_encoded_test = test_X.applymap(preprocessing_test)
+
+predictions = model.predict(X_encoded_test)
+
+original_labels = le_subclass.inverse_transform(predictions)
+
+submission = pd.read_csv("sample_submission.csv")
+submission["SUBCLASS"] = original_labels
+submission.to_csv('./submission_dump/XGBoost_submission.csv', encoding='UTF-8-sig', index=False)
+```
+
+결과 파일을 데이콘 대회 사이트에 올려 성능을 보면 점수가 0.2점대가 나왔다. 토크에서 봤듯이 외부 데이터 없이 많이들 내는 최선의 점수가 0.3점대 초반이라더니 머신러닝 기법을 적용했어도 명확한 한계가 있었을 것 같다.
+
+## 느낀점 / 후기 / 알게된 점
+~
