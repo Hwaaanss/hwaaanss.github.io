@@ -93,7 +93,8 @@ $\text{1.}$ **Ternary Weights**: Dense 레이어에서 {-1, 0, +1} 값만을 갖
   - 여기서 `⊛` 연산은 MatMul-free 구조에서 단순한 덧셈과 뺄셈으로 수행되며, 하드웨어 내에서 효율적인 처리를 가능하게 한다. 
 
 ![gru](/images/2024-07-20-matmulfreereport/gru.png) \\
-(출처: Scalable MatMul-free Language Modeling, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.5)
+(출처: Scalable MatMul-free Language Modeling pdf, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.5) \\
+
 $\text{2.}$ **MatMul-free Self-Attention**: Attention 연산에서 기존의 MatMul을 Hadamard 곱과 같은 element-wise 연산으로 대체했다. \\
 $\text{3.}$ **GRU 기반 Token Mixer**: 토큰 믹싱(token mixing) 단계에서 MatMul을 배제하고, GRU의 element-wise 연산을 통해 정보 통합을 수행했다.
 
@@ -156,7 +157,7 @@ MatMul-Free GRU는 전통적인 GRU와 비교해 단순화된 구조로, 하드�
 ### 결과 및 발견
 
 ![result](/images/2024-07-20-matmulfreereport/result.png) 
-(출처: Scalable MatMul-free Language Modeling, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.9)
+(출처: Scalable MatMul-free Language Modeling pdf, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.9)
 
 - **성능 비교**: MatMul-free 모델은 최대 2.7B 파라미터 모델에서도 Transformer++와 유사한 성능을 보였으며, 대규모 데이터셋을 처리하는 데 있어 성능 손실이 거의 없었다. 이는 MatMul-free 모델이 전통적인 곱셈 기반 모델과 비교해도 경쟁력 있는 성능을 유지할 수 있음을 보여준다. 특히, 모델 학습과 추론 시 복잡한 행렬 곱셈을 단순화함으로써 모델의 메모리 및 계산 자원을 효율적으로 활용하였다. 
 - **확장성 검증**: 모델 파라미터가 증가할수록 MatMul-free 모델의 효율성이 더 두드러졌으며, Scaling Law 분석 결과 기존 Transformer++ 모델과 성능 격차가 감소하였다. 이는 MatMul-free 아키텍처가 단순히 소규모 모델에만 적합한 것이 아니라, 대규모 파라미터에서도 효과적이라는 것을 시사한다. 모델 크기가 커질수록 MatMul-free 구조의 효율성이 더욱 두드러지며, 이는 대규모 언어 모델 학습 시 자원의 효율적인 활용 가능성을 보여준다. 
@@ -214,7 +215,7 @@ LLM의 자원 소모를 줄이고도 성능을 유지하는 MatMul-free 아키�
 본 연구는 언어 모델 설계에서 MatMul이 꼭 필요하지 않다는 것을 증명하여, 향후 LLM에서 연산 최적화를 위한 새로운 연구 방향성을 제시한다. 
 
 ![perfomancegraph](/images/2024-07-20-matmulfreereport/perfomancegraph.png)
-(출처: Scalable MatMul-free Language Modeling, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.8)
+(출처: Scalable MatMul-free Language Modeling pdf, Rui-Jie Zhu 외 8명, arXiv:2406.02528, p.8)
 
 더 많은 연구가 필요하겠지만, 위의 Compute-Loss 그래프를 보면 학습 연산량이 적은 상황에서 Transformer++ 보다 더 나은 성능을 보여준다. 이는 sLLM 모델에 적합하다고 보여져 모바일 시장에서 활용될 가능성도 있고, 학습을 돌리기에 자원이 부족한 학생들이나 개인이 프로젝트 진행 시 유의미한 효과를 볼 것으로 보여진다. 
 
