@@ -19,4 +19,4 @@ tag: [AI, ML, Project]
 손글씨를 인식하고 마스킹을 해야하므로 손글씨 데이터를 대상으로 웹크롤을 돌렸다.
 (파이썬 크롤링 코드)
 
-결국 크롤링은 포기하고 모아져있는 사이트들을 돌아다니던 중 학습용 데이터들을 제공하는 AIHub 라는 사이트를 발견했다. 일차적으로 학습과 검증 단계에서 필요한 데이터들은 AIHub(https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=data&dataSetSn=81) 사이트에서 구했다. 
+결국 크롤링은 포기하고 모아져있는 사이트들을 돌아다니던 중 학습용 데이터들을 제공하는 AIHub 라는 사이트를 발견했다. 일차적으로 학습과 검증 단계에서 필요한 데이터들은 AIHub(https://aihub.or.kr/aihubdata/data/view.do?currMenu=115&topMenu=100&aihubDataSe=data&dataSetSn=81) 사이트에서 구했다.
