@@ -109,7 +109,7 @@ import matplotlib.pyplot as plt
 from pillow_heif import register_heif_opener
 ```
 
-#### 경로들을 먼저 구분해줬다. 코드 안에 하드코딩 해두는 것보다는 이 방식이 추후 수정에 편리할 것 같아서다.
+경로들은 따로 빼줬다. 코드 안에 하드코딩 해두는 것보다는 이 방식이 추후 수정에 편리할 것 같아서다.
 ```python
 # Directory setting (지속적인 성능 업데이트를 위해 추가 수집된 학습용 raw data 는 dump로 들어가고, resize 한 후 processed 폴더로 이동)
 train_dump_dir = './train/dump'
@@ -126,7 +126,7 @@ val_dump_fns = sorted(os.listdir(val_dump_dir))
 val_processed_fns = sorted(os.listdir(val_processed_dir))
 ```
 
-#### dump, processed 각 폴더에 들어있는 데이터의 개수 파악
+dump, processed 각 폴더에 들어있는 데이터의 개수 파악
 ```python
 def CheckData():
     print('number of dump data (train, val): ',len(train_dump_fns), len(val_dump_fns))
@@ -137,7 +137,7 @@ def CheckData():
     # print('processed image shape: ',arr1.shape)  # h,w,c format
 ```
 
-#### 전처리 아예 안된 공책 필기 데이터를 dump -> img 이동 시 이진화, 사이즈 조절, 이름 변경 적용된 함수 / 임시로 train 대상으로 해놓음
+전처리 아예 안된 공책 필기 데이터를 dump -> img 이동 시 이진화, 사이즈 조절, 이름 변경 적용된 함수 / 임시로 train 대상으로 했다.
 위에서 heif 이미지 파일을 대비한 것과 같은 이유로 준비했으나, 수정이 필요한 부분이다. resize 대신 슬라이드 윈도우로 자르는 방식이 맞을 듯 싶다.
 ```python
 def AdjustData():
@@ -151,7 +151,7 @@ def AdjustData():
         cv2.imwrite(save_path, resized_img)
 ```     
 
-#### 훈련용 문장 데이터를 세로로 20장씩 이어 붙힌 후 3584x3584 로 사이즈 통일
+훈련용 문장 데이터를 세로로 20장씩 이어 붙힌 후 3584x3584 로 사이즈 통일
 ```python
 def TConcatsplit():
     for i in range(0,len(train_dump_fns),20):
@@ -169,7 +169,7 @@ def TConcatsplit():
                 cv2.imwrite(os.path.join(train_processed_dir,'printed', 'train_{}.png'.format(len(train_processed_fns))), sliced_img)
 ```
 
-#### 검증용 문장 데이터를 세로로 20장씩 이어 붙힌 후 3584x3584 로 사이즈 통일
+검증용 문장 데이터를 세로로 20장씩 이어 붙힌 후 3584x3584 로 사이즈 통일
 ```python
 def VConcatsplit():
     for i in range(0,len(val_dump_fns),20):
@@ -187,7 +187,7 @@ def VConcatsplit():
                 cv2.imwrite(os.path.join(val_processed_dir,'printed', 'val_{}.png'.format(len(val_processed_fns))), sliced_img)
 ```
 
-#### 위의 Concat 과 Split 전에 해야 하는 작업으로, 길이가 너무 짧은 이미지들을 제거한다. (검수 결과 간혹 가로가 터무니 없는 비율의 이미지들이 있었음)
+위의 Concat 과 Split 전에 해야 하는 작업으로, 길이가 너무 짧은 이미지들을 제거한다. (검수 결과 간혹 가로가 터무니 없는 비율의 이미지들이 있었음)
 ```python
 def RemoveShort():
     for i in range(len(train_dump_fns)):
