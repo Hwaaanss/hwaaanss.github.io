@@ -6,7 +6,7 @@ mathjax: true
 toc: true
 toc_sticky: true
 toc_label: Code
-categories: Dacon
+categories: Project
 tag: [AI, ML, Project]
 ---
 
