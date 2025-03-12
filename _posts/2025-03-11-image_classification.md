@@ -48,7 +48,7 @@ for i in range(len(train_distribution)):
     plt.text(i, train_distribution.values[i]+0.5, str(train_distribution.values[i]), ha='center')
 plt.show()
 ```
-@ bar chart 이미지
+![distribution1](../images/2025-03-11-image_classification/distribution1.png)
 데이터 분포를 확인해봤더니 불균형이 심한 것을 알게 되었다. 불균형을 먼저 가장 큰 수인 128에 맞춰 다른 label의 데이터들을 증강시키기로 결정했다. 사실 이 단계는 증강이라고 하기에는 샘플링 해서 복사하는 것이기 때문에 불균형 해소 정도만 수행했다고 볼 수 있다.
 
 ```python
@@ -204,4 +204,4 @@ print("완료! 결과가 xgboost_augmented_submission.csv 파일에 저장되었
 
 ㅡㅡㅡㅡ
 
-@ 리더보드 캡쳐 사진
+![Leaderboard](../images/2025-03-11-image_classification/Leaderboard.png)
