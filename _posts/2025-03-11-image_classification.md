@@ -1915,7 +1915,7 @@ print("\nValidation Accuracy: ", valid_accuracy, '%', sep='')
 
     E.g. tree_method = "hist", device = "cuda"
 
-  warnings.warn(smsg, UserWarning)
+    warnings.warn(smsg, UserWarning)
 
 Validation Accuracy: 0.9517857142857142%
 
