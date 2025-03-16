@@ -1890,20 +1890,20 @@ model.fit(
     [1668]	validation_0-mlogloss:0.00058	validation_1-mlogloss:0.15195
 
 
-        XGBClassifier(base_score=None, booster=None, callbacks=None,
-                  colsample_bylevel=None, colsample_bynode=None,
-                  colsample_bytree=None, device=None, early_stopping_rounds=100,
-                  enable_categorical=False, eta=0.01, eval_metric='mlogloss',
-                  feature_types=None, gamma=None, grow_policy=None,
-                  importance_type=None, interaction_constraints=None,
-                  learning_rate=0.08, max_bin=None, max_cat_threshold=None,
-                  max_cat_to_onehot=None, max_delta_step=None, max_depth=5,
-                  max_leaves=None, min_child_weight=None, missing=nan,
-                  monotone_constraints=None, multi_strategy=None,
-                  n_estimators=20000, n_jobs=None, num_parallel_tree=None, ...)
+    XGBClassifier(base_score=None, booster=None, callbacks=None,
+                colsample_bylevel=None, colsample_bynode=None,
+                colsample_bytree=None, device=None, early_stopping_rounds=100,
+                enable_categorical=False, eta=0.01, eval_metric='mlogloss',
+                eature_types=None, gamma=None, grow_policy=None,
+                importance_type=None, interaction_constraints=None,
+                learning_rate=0.08, max_bin=None, max_cat_threshold=None,
+                max_cat_to_onehot=None, max_delta_step=None, max_depth=5,
+                max_leaves=None, min_child_weight=None, missing=nan,
+                monotone_constraints=None, multi_strategy=None,
+                n_estimators=20000, n_jobs=None, num_parallel_tree=None, ...)
 
-학습 시 XGBoost 모델을 사용했다. 초기에는 LightGBM과 함께 하이퍼파라미터를 조정하며 테스트를 했는데, LightGBM은 데이터 증강률이 높을 수록 속도는 조금 더 빠른데 Validation Accuracy가 상대적으로 조금 낮게 나와서 XGBoost 를 채택하였다.
-증강률이 11이라 증강 후 총 데이터 수는 16800개이다. 그런데 n_estimator 값이 의미 없어보이는게 학습 로그를 보면 1668까지만 돌다가 멈춰버린다. 아마 early_stopping_rounds=100 파라미터 때문인 것 같은데, 이러면 1epoch 정도 밖에 돌지 않은 것 아닌가 싶지만 추후에 공부해보기로 했다. 
+학습 시 XGBoost 모델을 사용했다. 초기에는 LightGBM과 함께 하이퍼파라미터를 조정하며 테스트를 했는데, LightGBM은 데이터 증강률이 높을 수록 속도는 조금 더 빠른데 Validation Accuracy가 상대적으로 조금 낮게 나와서 XGBoost 를 채택하였다. \
+약 10epoch 정도는 돌길 바라며 n_estimator=20000 로 설정했지만, 학습 로그를 보면 1668까지만 돌다가 멈춰버린다. 아마 early_stopping_rounds=100 파라미터 때문인 것 같은데, 이러면 1epoch 정도 밖에 돌지 않아 학습이 제대로 이루어진게 맞는지 의문이 들었다. 이 부분은 차차 공부해보기로 했다. \ 
 다른 주요 하이퍼파라미터로는 모델의 학습률인 learning rate 는 0.08, 최대 트리의 깊이를 설정하는 max_depth 는 5, 트리의 견고함을 설정해주는 eta 는 0.01로 설정했다. eta는 값이 작을수록 모델이 견고해져서 오버피팅 방지에 유리하다. 
 
 
