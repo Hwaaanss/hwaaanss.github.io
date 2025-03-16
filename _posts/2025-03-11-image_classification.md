@@ -1948,4 +1948,4 @@ print("완료! 결과가 xgboost_augmented_submission.csv 파일에 저장되었
 
 ㅡㅡㅡㅡ
 
-![leaderboard](/images/2025-03-11-image_classification/leaderboard.png)
+![leaderb](/images/2025-03-11-image_classification/leaderb.png)
