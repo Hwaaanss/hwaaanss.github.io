@@ -270,6 +270,7 @@ model = xgb.XGBClassifier(
 )
 
 model.fit(X, y_encoded, eval_set=[(X, y_encoded),(X_val, y_encoded_val)], verbose=1)
+model.save_model('drive/MyDrive/데이콘/신용카드고객세그먼트/model_dump/xgboost_submit_0.1_1400_6_2_8_0.8_0.8_100_20.json')
 ```
 각 하이퍼파라미터들에 대해 설명을 간단히 하겠다.
 eta(≒learning rate) : 일반적으로 아는 learning rate 라고 생각하면 된다.
@@ -282,13 +283,14 @@ colsample_bytree : 각 스탭마다 사용할 feature의 비율이다. 역시 �
 early_stopping_rounds : 역시 과적합 방지를 위한 early stop 파라미터이다. 여태 학습 돌리면서 이거에 걸려서 중단된 적은 없었지만, 혹시 몰라서 설정했다.
 eval_metric : 이 모델은 다중 분류를 위한 모델이므로 mlogloss를 사용했다. 
 이 외로 scale_pos_weight 라는 클래스 불균형을 어느정도 해결해주는 하이퍼파라미터가 있어서 사용하고 싶었지만 이진 분류에만 사용이 가능해서 아쉬웠다.
+model.fit() 을 통해 학습을 진행한 후, 모델을 저장하도록 했다. 평소 저장은 마지막쯤에 답지와 같이 해왔지만 워낙 코랩 리소스를 많이 먹기 때문에 불안해서 저장부터 하도록 했다.
 
 #### Train with a Pretrained Model
 ```python
 model = xgb.XGBClassifier(
     random_state=42,
     eta=0.1,
-    n_estimators=1400,
+    n_estimators=600,
     max_depth=6,
     reg_alpha=2,
     reg_lambda=8,
@@ -299,6 +301,7 @@ model = xgb.XGBClassifier(
 )
 model.load_model('drive/MyDrive/데이콘/신용카드고객세그먼트/model_dump/xgboost_submit_0.1_1400_6_2_8_0.8_0.8_20.json')
 model.fit(X, y_encoded, eval_set=[(X, y_encoded),(X_val, y_encoded_val)], xgb_model=model, verbose=1)
+model.save_model('drive/MyDrive/데이콘/신용카드고객세그먼트/model_dump/xgboost_submit_0.1_2000_6_2_8_0.8_0.8_100_20.json')
 ```
 구글 코랩 TPU v28의 런타임이 학습을 한번 돌리면 아슬아슬하게 끝나기 때문에, 이어서 학습을 진행하기 위해 불러와서 돌리는 코드도 구성했다.
 
@@ -320,5 +323,45 @@ plt.legend()
 plt.grid()
 plt.show()
 ```
+
 학습의 전체적인 과정과 문제가 있진 않았는지 확인을 위해 시각화를 했다.
 ![metric_graph](/images/2025-03-25-creditcard_segmentation/metric_graph.png)
+다행히 문제가 있어보이진 않는다.
+
+## Prediction
+```python
+X_test.drop(columns=['ID'],inplace=True)
+y_test_pred = model.predict(X_test)
+y_test_pred_labels = le_target.inverse_transform(y_test_pred)
+
+test_data = test_df.copy() 
+test_data["pred_label"] = y_test_pred_labels
+```
+test 데이터에서 ID 컬럼을 제거하고, 학습시킨 모델을 통해 예측한 target들을 y_test_pred에 저장한 후, 인코딩 과정을 inverse 해서 답으로 되돌린다.(숫자->영문자)
+이후 원본 테스트 데이터프레임을 복사해 답지 부분을 만들어 넣는다.
+
+## Submission
+```python
+submission = test_data.groupby("ID")["pred_label"] \
+    .agg(lambda x: x.value_counts().idxmax()) \
+    .reset_index()
+
+submission.columns = ["ID", "Segment"]
+submission.to_csv('drive/MyDrive/데이콘/신용카드고객세그먼트/submissions/xgboost_submit_0.1_1400_6_2_8_0.8_0.8_100_20.csv',index=False)
+```
+제출 파일을 만들고 저장하도록 하면서 코드는 끝이다.
+
+
+## 돌아보기
+#### 알게 된 점
+먼저 직접 데이터 증강을 해보고 성능 향상까지 이끌어낸 첫 경험이다 보니 데이터 전처리의 중요성을 더욱 깨닫게 되었다. 
+수업에서 잠깐 배웠던 Data Augmentation 를 대회를 통해 직접 경험해보니 적은 데이터의 상황에서 필수적이라는 생각이 들었다.
+
+#### 스스로에 대한 고찰
+대회 초반에 또 제대로 된 EDA나 전처리 없이 모델링만으로 해서 첫 점수가 매우 낮았다. 
+데이터를 분석하고 모델 성능 향상을 위해 전처리는 가장 중요한 작업임을 잊지 말아야 한다.
+
+ㅡㅡㅡㅡ
+3/24 기준 리더보드
+
+![leaderbo0324](/images/2025-03-24-creditcard_segmentation/leaderbo0324.png)
