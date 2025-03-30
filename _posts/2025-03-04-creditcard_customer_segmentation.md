@@ -46,6 +46,7 @@ Target : 고객 세그먼트(A~E)
 
 ## Data Preprocessing
  *전처리 과정의 baseline은 데이콘에서 제공된 코드를 바탕으로 작업하였음.
+
 #### Data Load
 ```python
 data_splits = ["train", "test"]
@@ -204,3 +205,120 @@ for df_name, step in merge_list:
     최종 저장 완료: test_최종, shape: (600000, 857)
 
 이어서 test 데이터셋도 merge 작업을 해준다. 컬럼의 수가 하나 적은 이유는 segment 컬럼이 빠졌기 때문이다.
+
+#### Data Encoding
+```python
+feature_cols = [col for col in train_df.columns if col not in ["ID", "Segment"]]
+
+X = train_df[feature_cols].copy()
+y = train_df["Segment"].copy()
+
+le_target = LabelEncoder()
+y_encoded = le_target.fit_transform(y)
+
+categorical_features = X.select_dtypes(include=['object']).columns.tolist()
+
+X_test = test_df.copy()
+
+encoders = {}
+
+for col in categorical_features:
+    le_train = LabelEncoder()
+    X[col] = le_train.fit_transform(X[col])
+    encoders[col] = le_train
+    unseen_labels_val = set(X_test[col]) - set(le_train.classes_)
+    if unseen_labels_val:
+        le_train.classes_ = np.append(le_train.classes_, list(unseen_labels_val))
+    X_test[col] = le_train.transform(X_test[col])
+gc.collect()
+
+X, X_val, y_encoded, y_encoded_val = train_test_split(X, y_encoded, test_size=0.1, shuffle=True, stratify=y_encoded, random_state=42)
+```
+이제 병합한 train 데이터와 test 데이터들을 인코딩 했다.  \
+먼저 train 데이터에서 ID와 Segment를 제거해서 X에 copy하고, target인 Segment는 y에 copy한 후, y는 LabelEncoder로 인코딩해줬다. \
+그 후 test 데이터도 copy하고, LabelEncoder로 정수로 변환했다. 변환된 LabelEncoder 객체를 딕셔너리 형태로 저장한 후, train 데이터에 없던 새로운 범주값이 나오면 딕셔너리에 추가하도록 했다. 이후 학습 단계에서 validation을 위한 데이터를 train_test_split을 사용해서 나눴다. 마지막으로 병합 할 때와 마찬가지로 메모리 관리를 위해 gc.collect()로 사용했던 변수들을 제거했다.
+
+#### Check Target's Distribution Before Train
+```python
+y.value_counts()
+```
+        count
+    Segment	
+    E	1922052
+    D	349242
+    C	127590
+    A	972
+    B	144
+
+병합, train set과 validation set의 분리, 각 데이터셋의 인코딩 작업까지 마쳤으니 현재 데이터의 분포를 알아봐야겠다.\
+코드를 통해 확인해보니 데이터 불균형이 광장히 심했다. 데이터 불균형을 맞추기 위해 오버샘플링을 하자니 코랩이나 로컬 환경의 RAM이 부족해서 안되고, 언더샘플링을 하자니 손실되는 데이터의 개수가 너무 많을 것 같아 결국 XGBoost 모델의 하이퍼파라미터들을 이용해서 해결해보고자 했다.
+
+## Train
+#### Train a New Model
+```python
+model = xgb.XGBClassifier(
+    random_state=42,
+    eta=0.1,
+    n_estimators=1400,
+    max_depth=6,
+    reg_alpha=2,
+    reg_lambda=8,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    early_stopping_rounds=20,
+    eval_metric='mlogloss'
+)
+
+model.fit(X, y_encoded, eval_set=[(X, y_encoded),(X_val, y_encoded_val)], verbose=1)
+```
+각 하이퍼파라미터들에 대해 설명을 간단히 하겠다.
+eta(≒learning rate) : 일반적으로 아는 learning rate 라고 생각하면 된다.
+n_estimator : 트리 모델의 개수이다. epoch 혹은 step 처럼 학습의 횟수를 설정하듯이 설정하기도 한다.
+max_depth : 트리 모델의 최대 깊이이다. 너무 깊어지면 과적합이 일어날 수 있다.
+reg_alpha : L1-규제 즉, Lasso 파라미터이다. 가중치를 강제로 0으로 만들어버리기 때문에 feature가 많은 경우 feature selection 의 효과를 볼 수도 있다. 불필요한 데이터 feature들을 제거하도록 사용했다.
+reg_lambda : L2-규제 즉, Ridge 파라미터이다. 모든 특성들의 가중치를 줄여 오버피팅 방지에 사용된다. 나는 과적합 방지 장치를 걸어두고 epoch을 늘리는 방식을 택해서 설정해줬다. 
+subsample : 각 스탭마다 사용할 샘플의 비율이다. 오버피팅 방지를 위해 사용했다.
+colsample_bytree : 각 스탭마다 사용할 feature의 비율이다. 역시 과적합 방지를 위해 사용된다.
+early_stopping_rounds : 역시 과적합 방지를 위한 early stop 파라미터이다. 여태 학습 돌리면서 이거에 걸려서 중단된 적은 없었지만, 혹시 몰라서 설정했다.
+eval_metric : 이 모델은 다중 분류를 위한 모델이므로 mlogloss를 사용했다. 
+이 외로 scale_pos_weight 라는 클래스 불균형을 어느정도 해결해주는 하이퍼파라미터가 있어서 사용하고 싶었지만 이진 분류에만 사용이 가능해서 아쉬웠다.
+
+#### Train with a Pretrained Model
+```python
+model = xgb.XGBClassifier(
+    random_state=42,
+    eta=0.1,
+    n_estimators=1400,
+    max_depth=6,
+    reg_alpha=2,
+    reg_lambda=8,
+    subsample=0.8,
+    colsample_bytree=0.8,
+    early_stopping_rounds=20,
+    eval_metric='mlogloss'
+)
+model.load_model('drive/MyDrive/데이콘/신용카드고객세그먼트/model_dump/xgboost_submit_0.1_1400_6_2_8_0.8_0.8_20.json')
+model.fit(X, y_encoded, eval_set=[(X, y_encoded),(X_val, y_encoded_val)], xgb_model=model, verbose=1)
+```
+구글 코랩 TPU v28의 런타임이 학습을 한번 돌리면 아슬아슬하게 끝나기 때문에, 이어서 학습을 진행하기 위해 불러와서 돌리는 코드도 구성했다.
+
+#### Check the Eval Metric Score
+```python
+results = model.evals_result()
+
+plt.figure(figsize=(8, 5))
+
+for dataset in results["validation_0"]:
+    plt.plot(results["validation_0"][dataset], label=f"Train {dataset}")
+for dataset in results["validation_1"]:
+    plt.plot(results["validation_1"][dataset], label=f"Validation {dataset}")
+
+plt.xlabel("Iteration")
+plt.ylabel("Metric Value")
+plt.title("XGBoost Eval Metric")
+plt.legend()
+plt.grid()
+plt.show()
+```
+학습의 전체적인 과정과 문제가 있진 않았는지 확인을 위해 시각화를 했다.
+![metric_graph](/images/2025-03-25-creditcard_segmentation/metric_graph.png)
