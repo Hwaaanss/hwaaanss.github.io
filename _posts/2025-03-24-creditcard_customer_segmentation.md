@@ -332,7 +332,7 @@ plt.show()
 ```
 
 학습의 전체적인 과정과 문제가 있진 않았는지 확인을 위해 시각화를 했다.
-![metric_graph](/images/2025-03-25-creditcard_segmentation/metric_graph.png)
+![metric_graph](/images/2025-03-24-creditcard_segmentation/metric_graph.png)
 다행히 문제가 있어보이진 않는다.
 
 ## Prediction
