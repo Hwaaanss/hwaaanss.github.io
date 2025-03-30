@@ -30,19 +30,20 @@ drive.mount('/content/drive')
 ## EDA(Exploratory Data Analysis)
 #### Data Shape
 
-고객별 금융활동 데이터
-각 정보 내 parquet파일로 구성
-1.회원정보[폴더]
-2.신용정보[폴더]
-3.승인매출정보[폴더]
-4.청구입금정보[폴더]
-5.잔액정보[폴더]
-6.채널정보[폴더]
-7.마케팅정보[폴더]
-8.성과정보[폴더]
-Target : 고객 세그먼트(A~E)
+고객별 금융활동 데이터 \
+각 정보 내 parquet파일로 구성 \
+1.회원정보[폴더] \
+2.신용정보[폴더] \
+3.승인매출정보[폴더] \
+4.청구입금정보[폴더] \
+5.잔액정보[폴더] \
+6.채널정보[폴더] \
+7.마케팅정보[폴더] \
+8.성과정보[폴더] \
+Target : 고객 세그먼트(A~E) \
 
-로 구성되어 있으며, 각 파일들에는 "기준년월, ID, 남녀구분코드, 연령, 회원여부_이용가능, 회원여부_이용가능_CA, 회원여부_이용가능_카드론, 소지여부_신용, 소지카드수_유효_신용, 소지카드수_이용가능_신용, 입회일자_신용, 입회경과개월수_신용, 회원여부_연체" 등과 같은 컬럼 정보 858개가 있다. 이 각각의 컬럼 별로 행은 2,400,000개가 있다. 즉 모든 파일들을 이어 붙히면 (2400000,858) 의 shape인 셈이다.
+로 구성되어 있으며, 각 파일들에는 "기준년월, ID, 남녀구분코드, 연령, 회원여부_이용가능, 회원여부_이용가능_CA, 회원여부_이용가능_카드론, 소지여부_신용, 소지카드수_유효_신용, 소지카드수_이용가능_신용, 입회일자_신용, 입회경과개월수_신용, 회원여부_연체" 등과 같은 컬럼 정보 858개가 있다. 이 각각의 컬럼 별로 행은 2,400,000개가 있다.  \
+즉 모든 파일들을 이어 붙히면 (2400000,858) 의 shape인 셈이다.
 
 ## Data Preprocessing
  *전처리 과정의 baseline은 데이콘에서 제공된 코드를 바탕으로 작업하였음.
@@ -83,9 +84,7 @@ gc.collect()
 ```python
 info_categories = ["customer", "credit", "sales", "billing", "balance", "channel", "marketing", "performance"]
 months = ['07', '08', '09', '10', '11', '12']
-```
 
-```python
 train_dfs = {}
 
 for prefix in info_categories:
@@ -107,6 +106,7 @@ performance_train_df = train_dfs["performance_train_df"]
 gc.collect()
 ```
 
+    [출력]
     customer_train_df is created with shape: (2400000, 78)
     credit_train_df is created with shape: (2400000, 42)
     sales_train_df is created with shape: (2400000, 406)
@@ -139,6 +139,7 @@ for df_name, step in merge_list:
     gc.collect()
 ```
 
+    [출력]
     Step1 저장 완료: train_step1, shape: (2400000, 118)
     Step2 저장 완료: train_Step2, shape: (2400000, 522)
     Step3 저장 완료: train_Step3, shape: (2400000, 566)
@@ -171,6 +172,7 @@ performance_test_df = test_dfs["performance_test_df"]
 gc.collect()
 ```
 
+    [출력]
     customer_test_df is created with shape: (600000, 77)
     credit_test_df is created with shape: (600000, 42)
     sales_test_df is created with shape: (600000, 406)
@@ -203,6 +205,7 @@ for df_name, step in merge_list:
     gc.collect()
 ```
 
+    [출력]
     Step1 저장 완료: test_step1, shape: (600000, 117)
     Step2 저장 완료: test_Step2, shape: (600000, 521)
     Step3 저장 완료: test_Step3, shape: (600000, 565)
@@ -243,12 +246,15 @@ X, X_val, y_encoded, y_encoded_val = train_test_split(X, y_encoded, test_size=0.
 ```
 이제 병합한 train 데이터와 test 데이터들을 인코딩 했다.  \
 먼저 train 데이터에서 ID와 Segment를 제거해서 X에 copy하고, target인 Segment는 y에 copy한 후, y는 LabelEncoder로 인코딩해줬다. \
-그 후 test 데이터도 copy하고, LabelEncoder로 정수로 변환했다. 변환된 LabelEncoder 객체를 딕셔너리 형태로 저장한 후, train 데이터에 없던 새로운 범주값이 나오면 딕셔너리에 추가하도록 했다. 이후 학습 단계에서 validation을 위한 데이터를 train_test_split을 사용해서 나눴다. 마지막으로 병합 할 때와 마찬가지로 메모리 관리를 위해 gc.collect()로 사용했던 변수들을 제거했다.
+그 후 test 데이터도 copy하고, LabelEncoder로 정수로 변환했다. 변환된 LabelEncoder 객체를 딕셔너리 형태로 저장한 후, train 데이터에 없던 새로운 범주값이 나오면 딕셔너리에 추가하도록 했다.  \
+이후 학습 단계에서 validation을 위한 데이터를 train_test_split을 사용해서 나눴다. 마지막으로 병합 할 때와 마찬가지로 메모리 관리를 위해 gc.collect()로 사용했던 변수들을 제거했다.
 
 #### Check Target's Distribution Before Train
 ```python
 y.value_counts()
 ```
+
+    [출력]
         count
     Segment	
     E	1922052
@@ -279,17 +285,17 @@ model = xgb.XGBClassifier(
 model.fit(X, y_encoded, eval_set=[(X, y_encoded),(X_val, y_encoded_val)], verbose=1)
 model.save_model('drive/MyDrive/데이콘/신용카드고객세그먼트/model_dump/xgboost_submit_0.1_1400_6_2_8_0.8_0.8_100_20.json')
 ```
-각 하이퍼파라미터들에 대해 설명을 간단히 하겠다.
-eta(≒learning rate) : 일반적으로 아는 learning rate 라고 생각하면 된다.
-n_estimator : 트리 모델의 개수이다. epoch 혹은 step 처럼 학습의 횟수를 설정하듯이 설정하기도 한다.
-max_depth : 트리 모델의 최대 깊이이다. 너무 깊어지면 과적합이 일어날 수 있다.
-reg_alpha : L1-규제 즉, Lasso 파라미터이다. 가중치를 강제로 0으로 만들어버리기 때문에 feature가 많은 경우 feature selection 의 효과를 볼 수도 있다. 불필요한 데이터 feature들을 제거하도록 사용했다.
-reg_lambda : L2-규제 즉, Ridge 파라미터이다. 모든 특성들의 가중치를 줄여 오버피팅 방지에 사용된다. 나는 과적합 방지 장치를 걸어두고 epoch을 늘리는 방식을 택해서 설정해줬다. 
-subsample : 각 스탭마다 사용할 샘플의 비율이다. 오버피팅 방지를 위해 사용했다.
-colsample_bytree : 각 스탭마다 사용할 feature의 비율이다. 역시 과적합 방지를 위해 사용된다.
-early_stopping_rounds : 역시 과적합 방지를 위한 early stop 파라미터이다. 여태 학습 돌리면서 이거에 걸려서 중단된 적은 없었지만, 혹시 몰라서 설정했다.
-eval_metric : 이 모델은 다중 분류를 위한 모델이므로 mlogloss를 사용했다. 
-이 외로 scale_pos_weight 라는 클래스 불균형을 어느정도 해결해주는 하이퍼파라미터가 있어서 사용하고 싶었지만 이진 분류에만 사용이 가능해서 아쉬웠다.
+각 하이퍼파라미터들에 대해 설명을 간단히 하겠다. \
+eta(≒learning rate) : 일반적으로 아는 learning rate 라고 생각하면 된다. \
+n_estimator : 트리 모델의 개수이다. epoch 혹은 step 처럼 학습의 횟수를 설정하듯이 설정하기도 한다. \
+max_depth : 트리 모델의 최대 깊이이다. 너무 깊어지면 과적합이 일어날 수 있다. \
+reg_alpha : L1-규제 즉, Lasso 파라미터이다. 가중치를 강제로 0으로 만들어버리기 때문에 feature가 많은 경우 feature selection 의 효과를 볼 수도 있다. 불필요한 데이터 feature들을 제거하도록 사용했다. \
+reg_lambda : L2-규제 즉, Ridge 파라미터이다. 모든 특성들의 가중치를 줄여 오버피팅 방지에 사용된다. 나는 과적합 방지 장치를 걸어두고 epoch을 늘리는 방식을 택해서 설정해줬다.  \
+subsample : 각 스탭마다 사용할 샘플의 비율이다. 오버피팅 방지를 위해 사용했다. \
+colsample_bytree : 각 스탭마다 사용할 feature의 비율이다. 역시 과적합 방지를 위해 사용된다. \
+early_stopping_rounds : 역시 과적합 방지를 위한 early stop 파라미터이다. 여태 학습 돌리면서 이거에 걸려서 중단된 적은 없었지만, 혹시 몰라서 설정했다. \
+eval_metric : 이 모델은 다중 분류를 위한 모델이므로 mlogloss를 사용했다.  \
+이 외로 scale_pos_weight 라는 클래스 불균형을 어느정도 해결해주는 하이퍼파라미터가 있어서 사용하고 싶었지만 이진 분류에만 사용이 가능해서 아쉬웠다. \
 model.fit() 을 통해 학습을 진행한 후, 모델을 저장하도록 했다. 평소 저장은 마지막쯤에 답지와 같이 해왔지만 워낙 코랩 리소스를 많이 먹기 때문에 불안해서 저장부터 하도록 했다.
 
 #### Train with a Pretrained Model
@@ -331,8 +337,8 @@ plt.grid()
 plt.show()
 ```
 
-학습의 전체적인 과정과 문제가 있진 않았는지 확인을 위해 시각화를 했다.
-![metric_graph](/images/2025-03-24-creditcard_segmentation/metric_graph.png)
+학습의 전체적인 과정과 문제가 있진 않았는지 확인을 위해 시각화를 했다. \
+![metric_graph](/images/2025-03-24-creditcard_segmentation/metric_graph.png)   \
 다행히 문제가 있어보이진 않는다.
 
 ## Prediction
@@ -344,7 +350,7 @@ y_test_pred_labels = le_target.inverse_transform(y_test_pred)
 test_data = test_df.copy() 
 test_data["pred_label"] = y_test_pred_labels
 ```
-test 데이터에서 ID 컬럼을 제거하고, 학습시킨 모델을 통해 예측한 target들을 y_test_pred에 저장한 후, 인코딩 과정을 inverse 해서 답으로 되돌린다.(숫자->영문자)
+test 데이터에서 ID 컬럼을 제거하고, 학습시킨 모델을 통해 예측한 target들을 y_test_pred에 저장한 후, 인코딩 과정을 inverse 해서 답으로 되돌린다.(숫자->영문자) \
 이후 원본 테스트 데이터프레임을 복사해 답지 부분을 만들어 넣는다.
 
 ## Submission
@@ -366,8 +372,8 @@ submission.to_csv('drive/MyDrive/데이콘/신용카드고객세그먼트/submis
 #### 스스로에 대한 고찰
 (대회 종료 or 도전 종료 후 작성)
 
-ㅡㅡㅡㅡ
+ㅡㅡㅡㅡ  \
 3/24 기준 리더보드
 
 ![leaderbo0324](/images/2025-03-24-creditcard_segmentation/leaderbo0324.png)
-2025.03.24 기준 1등 달성했다. reg_lambda 값을 올려 L2 규제를 강화했더니 점수가 더 올랐다.
+2025.03.24 기준 1등 기록했다. reg_lambda 값을 올려 L2 규제를 강화했더니 점수가 더 올랐다.
