@@ -365,3 +365,4 @@ submission.to_csv('drive/MyDrive/데이콘/신용카드고객세그먼트/submis
 3/24 기준 리더보드
 
 ![leaderbo0324](/images/2025-03-24-creditcard_segmentation/leaderbo0324.png)
+2025.03.24 기준 1등 달성했다. reg_lambda 값을 올려 L2 규제를 강화했더니 점수가 더 올랐다.
