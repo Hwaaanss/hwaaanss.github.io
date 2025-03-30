@@ -84,6 +84,7 @@ gc.collect()
 info_categories = ["customer", "credit", "sales", "billing", "balance", "channel", "marketing", "performance"]
 months = ['07', '08', '09', '10', '11', '12']
 ```
+
 ```python
 train_dfs = {}
 
@@ -105,6 +106,7 @@ performance_train_df = train_dfs["performance_train_df"]
 
 gc.collect()
 ```
+
     customer_train_df is created with shape: (2400000, 78)
     credit_train_df is created with shape: (2400000, 42)
     sales_train_df is created with shape: (2400000, 406)
@@ -114,6 +116,7 @@ gc.collect()
     marketing_train_df is created with shape: (2400000, 64)
     performance_train_df is created with shape: (2400000, 49)
     0
+
 ```python
 train_df = customer_train_df.merge(credit_train_df, on=['기준년월', 'ID'], how='left')
 print("Step1 저장 완료: train_step1, shape:", train_df.shape)
@@ -135,6 +138,7 @@ for df_name, step in merge_list:
     del globals()[df_name]
     gc.collect()
 ```
+
     Step1 저장 완료: train_step1, shape: (2400000, 118)
     Step2 저장 완료: train_Step2, shape: (2400000, 522)
     Step3 저장 완료: train_Step3, shape: (2400000, 566)
@@ -166,6 +170,7 @@ performance_test_df = test_dfs["performance_test_df"]
 
 gc.collect()
 ```
+
     customer_test_df is created with shape: (600000, 77)
     credit_test_df is created with shape: (600000, 42)
     sales_test_df is created with shape: (600000, 406)
@@ -175,6 +180,7 @@ gc.collect()
     marketing_test_df is created with shape: (600000, 64)
     performance_test_df is created with shape: (600000, 49)
     0
+
 ```python
 test_df = customer_test_df.merge(credit_test_df, on=['기준년월', 'ID'], how='left')
 print("Step1 저장 완료: test_step1, shape:", test_df.shape)
@@ -196,6 +202,7 @@ for df_name, step in merge_list:
     del globals()[df_name]
     gc.collect()
 ```
+
     Step1 저장 완료: test_step1, shape: (600000, 117)
     Step2 저장 완료: test_Step2, shape: (600000, 521)
     Step3 저장 완료: test_Step3, shape: (600000, 565)
