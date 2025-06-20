@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "신용카드 고객 세그먼트 분류 AI 경진대회(작성 중)"
+title: "신용카드 고객 세그먼트 분류 AI 경진대회"
 excerpt: "신용카드 고객 분류 대회 참가 기록"
 mathjax: true
 toc: true
