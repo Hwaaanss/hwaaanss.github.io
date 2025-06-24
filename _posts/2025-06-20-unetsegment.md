@@ -171,4 +171,4 @@ AdamW 옵티마이저를 사용했을 때, 가장 좋은 성능을 보인 조합
 
 ---
 ## In closing
-U-Net에 대한 논문 리뷰와 간단한 구현을 진행해 보았다. 
+U-Net에 대한 논문 리뷰와 간단한 구현을 진행해 보았다. 나의 모델 구현 코드는 https://github.com/Hwaaanss/DL_21016065_jaehwanlee/tree/main/assignment  에서 확인할 수 있다.
