@@ -12,23 +12,23 @@ tag: [AI, DL, CV]
 
 ## Introduction
 Semantic Segmentation이란 이미지 객체 분할에 있어서 의미(semantic)가 같은 객체라면 하나의 클래스로 분할(segmentation)하는 것을 의미한다.
-![whatisunet](/images/2025-06-20-unet/whatisunet.png)
+![whatisunet](/images/2025-06-20-unet/whatisunet.png) \
 출처: DeeplabV3+ paper
 
 이와 같이 같은 사람으로 의미가 같다면 사람이라는 하나의 클래스로 분류를 한다.
 
 ## Network Architecture
 U-Net 모델의 아키텍처에 대해 알아보자.
-![whatisunet](/images/2025-06-20-unet/unetarchitecture.png)
+![whatisunet](/images/2025-06-20-unet/unetarchitecture.png) \
 U-Net은 위 그림과 같이 전체적인 구조가 U자 모양을 하고 있어 U-Net이라는 이름이 붙었다. 구조는 크게 이미지를 압축하며 feature를 추출하는 **Encoder(Contracting Path)** 부분과, 다시 이미지를 확장하며 정확한 위치를 찾는 **Decoder(Expansive Path)** 부분으로 나눌 수 있다.
 
-![Encoder and Decoder](/images/2025-06-20-unet/unet-encoder-decoder.png)
+![Encoder and Decoder](/images/2025-06-20-unet/unet-encoder-decoder.png) \
 출처: U-Net Paper
 
 ### U-Net Encoder (Contracting Path)
 인코더는 입력 이미지의 Context, 즉 전체적인 특징을 잡아내는 부분이다. 일반적인 CNN 모델의 특징 추출부와 유사한 역할을 한다고 볼 수 있다.
 
-![U-Net Encoder Diagram](/images/2025-06-20-unet/unet-encoder-detail.png)
+![U-Net Encoder Diagram](/images/2025-06-20-unet/unet-encoder-detail.png) \
 출처: Deep Campus tistory
 
 U-Net의 인코더는 다음과 같은 과정으로 구성된다.
@@ -40,7 +40,7 @@ U-Net의 인코더는 다음과 같은 과정으로 구성된다.
 ### U-Net Decoder (Expansive Path)
 디코더는 인코더에서 압축된 feature map을 다시 확장하여 원본 이미지 크기의 세분화된 분할 맵(Segmentation map)을 만드는 부분이다. 이 부분이 U-Net의 핵심 중 하나이다.
 
-![U-Net Decoder Diagram](/images/2025-06-20-unet/unet-decoder-detail.png)
+![U-Net Decoder Diagram](/images/2025-06-20-unet/unet-decoder-detail.png) \
 출처: Deep Campus tistory
 
 디코더의 과정은 다음과 같다.
@@ -54,11 +54,11 @@ U-Net의 인코더는 다음과 같은 과정으로 구성된다.
 ### 3D U-Net
 U-Net은 2D 이미지뿐만 아니라 3D 의료 영상(e.g., MRI, CT)에도 적용될 수 있도록 3D U-Net으로 확장되었다. 기본적인 U자 구조와 Skip Connection 개념은 동일하며, 모든 연산이 3D(Convolution, Max Pooling 등)로 확장된 형태이다.
 
-![3D U-Net Architecture](/images/2025-06-20-unet/3d-unet.jpg)
+![3D U-Net Architecture](/images/2025-06-20-unet/3d-unet.jpg) \
 출처: ResearchGate Unet Image by Rogger Booto Tokime
 
 ## Training
-U-Net 논문에서 사용된 학습 방법과 전략에 대해 알아본다.
+U-Net 논문에서 사용된 학습 방법과 전략에 대해 알아보자.
 
 ### Setting
 논문에서 제안한 초기 학습 환경 설정은 다음과 같다.
@@ -82,13 +82,13 @@ U-Net 논문에서 사용된 학습 방법과 전략에 대해 알아본다.
 #### Data Augmentation : Elastic Deformation
 적은 데이터로도 모델이 다양한 상황에 대응할 수 있도록 데이터 증강 기법을 사용했다. [cite_start]특히 의료 이미지는 조직의 변형이 많기 때문에, 이미지에 임의의 탄성 변형(Elastic Deformation)을 주어 모델의 강건함(Robustness)을 높였다.
 
-![Elastic Deformation Example](/images/2025-06-20-unet/elastic-deformation.png)
+![Elastic Deformation Example](/images/2025-06-20-unet/elastic-deformation.png) \
 [cite_start]출처: Elastic Deformations for Data Augmentation in Breast Cancer Mass Detection 
 
 #### Data Extrapolate : Mirroring
 U-Net은 이미지를 타일 단위로 처리하는데, 이 때 이미지의 경계 부분은 주변 픽셀 정보가 부족하여 예측이 불안정할 수 있다. [cite_start]이를 해결하기 위해 원본 이미지의 경계를 기준으로 주변을 거울처럼 반사(Mirroring)하여 패딩하는 방식을 사용했다. 이를 통해 경계 부분의 예측 정확도를 높였다.
 
-![Mirroring Example](/images/2025-06-20-unet/mirroring.png)
+![Mirroring Example](/images/2025-06-20-unet/mirroring.png) \
 [cite_start]출처: Code Journey github blog 
 
 ## Experiments
@@ -97,13 +97,13 @@ U-Net은 여러 이미지 분할 챌린지에서 뛰어난 성능을 입증했�
 ### 1st Experiment : EM segmentation challenge
 전자 현미경(EM) 이미지에서 뉴런 구조를 분할하는 챌린지이다. [cite_start]U-Net은 이 챌린지에서 다른 알고리즘들을 제치고 1위를 차지했다. [cite_start]특히 Warping Error에서 가장 낮은 수치를 기록했다.
 
-![EM Challenge Results](/images/2025-06-20-unet/em-challenge-results.png)
+![EM Challenge Results](/images/2025-06-20-unet/em-challenge-results.png) \
 [cite_start]출처: U-Net Paper 
 
 ### 2nd Experiment : ISBI cell tracking challenge
 [cite_start]세포 분할 및 추적 챌린지에서도 U-Net은 뛰어난 성능을 보였다. [cite_start]PhC-U373 데이터셋과 DIC-HeLa 데이터셋 모두에서 월등히 높은 IoU 점수(각각 0.9203, 0.7756)를 기록하며 1위를 차지했다.
 
-![ISBI Challenge Results](/images/2025-06-20-unet/isbi-challenge-results.png)
+![ISBI Challenge Results](/images/2025-06-20-unet/isbi-challenge-results.png) \
 [cite_start]출처: U-Net Paper 
 
 ## Authors’ Conclusion & My Opinion
@@ -124,7 +124,7 @@ U-Net은 여러 이미지 분할 챌린지에서 뛰어난 성능을 입증했�
 
 [cite_start]데이터가 충분하고, 종양의 위치 자체가 중요한 정보라고 판단하여 Elastic Deformation과 Mirroring은 적용하지 않았다.
 
-![Brain Tumor Dataset Example](/images/2025-06-20-unet/brain-tumor-dataset.png)
+![Brain Tumor Dataset Example](/images/2025-06-20-unet/brain-tumor-dataset.png) \
 
 ### Setting
 * [cite_start]**Optimizer**: SGD, AdamW 
@@ -135,20 +135,20 @@ U-Net은 여러 이미지 분할 챌린지에서 뛰어난 성능을 입증했�
 * [cite_start]**Scoring**: IoU Score ($IoU = \frac{A \cap B}{A \cup B}$) 
 
 ### Combinations of SGD Hyperparameters
-![SGD settings](/images/2025-06-20-unet/table-sgd.png)
-![SGD graph](/images/2025-06-20-unet/graph-sgd.png)
+![SGD settings](/images/2025-06-20-unet/table-sgd.png) \
+![SGD graph](/images/2025-06-20-unet/graph-sgd.png) \
 
 ### Hyperparameter Tuning of SGD
 [cite_start]SGD 옵티마이저를 사용했을 때, 가장 좋은 성능을 보인 조합은 **learning rate=1e-4, batch size=4, epoch=50** 이었고, 테스트 데이터셋에서 약 **0.544**의 Mean IoU 점수를 얻었다.
-![SGD pred](/images/2025-06-20-unet/pred-sgd.png)
+![SGD pred](/images/2025-06-20-unet/pred-sgd.png) \
 
 ### Combinations of AdamW Hyperparameters
-![AdamW settings](/images/2025-06-20-unet/table-adamw.png)
-![AdamW graph](/images/2025-06-20-unet/graph-adamw.png)
+![AdamW settings](/images/2025-06-20-unet/table-adamw.png) \
+![AdamW graph](/images/2025-06-20-unet/graph-adamw.png) \
 
 ### Hyperparameter Tuning of AdamW
 [cite_start]AdamW 옵티마이저를 사용했을 때, 가장 좋은 성능을 보인 조합 역시 **learning rate=1e-4, batch size=4, epoch=50** 이었고, 테스트 데이터셋에서 약 **0.542**의 Mean IoU 점수를 얻었다.
-![AdamW pred](/images/2025-06-20-unet/pred-adamw.png)
+![AdamW pred](/images/2025-06-20-unet/pred-adamw.png) \
 
 ### Best Model
 두 옵티마이저의 결과가 비슷했지만, 미세하게 더 높았던 SGD 모델을 최종 모델로 선정했다.
@@ -158,8 +158,8 @@ U-Net은 여러 이미지 분할 챌린지에서 뛰어난 성능을 입증했�
 * [cite_start]**Epoch**: 50 
 * [cite_start]**Test IoU Score**: **0.5446** 
 
-![Final Best Model Graph](/images/2025-06-20-unet/best-sgd.png)
-![Final Best Model Result](/images/2025-06-20-unet/pred-sgd.png)
+![Final Best Model Graph](/images/2025-06-20-unet/best-sgd.png) \
+![Final Best Model Result](/images/2025-06-20-unet/pred-sgd.png) \
 
 ## Resources
 * [cite_start]U-Net Paper: https://arxiv.org/abs/1505.04597 
