@@ -202,7 +202,7 @@ def convert_to_final_format(row, vocab):
 all_patient_data = final_df.apply(lambda row: convert_to_final_format(row, vocab), axis=1).tolist()
 
 data_to_save = {'all_patient_data': all_patient_data, 'vocab': vocab}
-file_path = 'processed_data.pkl'
+file_path = '/content/drive/MyDrive/Research/MIMIC4withTransformer/mimic-iv-3.1/dump/processed_data.pkl'
 with open(file_path, 'wb') as f:
 	pickle.dump(data_to_save, f)
 
@@ -212,7 +212,7 @@ print(f"총 {len(all_patient_data)}명의 환자 데이터가 처리되었습니
 ```
 
 ## Model Architecture
-생성된 시퀀스를 입력받아 생존률(0~1 사이의 값)을 출력하는 Transformer 기반 모델을 PyTorch로 설계한다. 
+생성된 시퀀스를 입력받아 생존률(0~1 사이의 값)을 출력하는 Transformer 기반 모델을 PyTorch로 설계한다. 아래는 순서에 대한 정보를 위해 Positional Encoding 하는 함수를 정의한 코드이다.
 ```python
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -231,9 +231,10 @@ class PositionalEncoding(nn.Module):
 		x = x + self.pe[:x.size(0)]
 		return self.dropout(x)
 ```
+
+아래는 생존율을 예측하는 함수를 정의한 코드이다.
 ```python
 class SurvivalPredictor(nn.Module):
-
 	def __init__(self, vocab_size, d_model=256, nhead=8, num_encoder_layers=6, dim_feedforward=512, dropout=0.1):
 		super().__init__()
 		self.d_model = d_model
@@ -257,6 +258,8 @@ class SurvivalPredictor(nn.Module):
 		survival_prob = self.classifier(cls_output)
 		return survival_prob
 ```
+
+아래는 환자의 데이터를 시퀀스 데이터로 받는 함수를 정의한 코드이다.
 ```python
 class PatientSequenceDataset(Dataset):
 	def __init__(self, data):
@@ -278,6 +281,8 @@ def collate_fn(batch, vocab):
 	labels = torch.stack(labels)
 	return padded_sequences, attention_masks, labels
 ```
+
+아래는 모델 훈련 과정을 정의한 코드이다.
 ```python
 def train_model(model, train_loader, val_loader, num_epochs=10):
 	model.to(device)
@@ -323,6 +328,8 @@ def train_model(model, train_loader, val_loader, num_epochs=10):
 	print("--- 모델 학습 완료 ---\n")
 	return model
 ```
+
+아래는 처치 순서 추천과 생존율 예측 프로세스를 위한 함수를 정의한 코드이다.
 ```python
 def recommend_and_predict(patient_info, model, vocab, max_steps=5, beam_width=3):
 
@@ -366,4 +373,73 @@ def recommend_and_predict(patient_info, model, vocab, max_steps=5, beam_width=3)
 	return recommended_treatments, best_survival_rate
 
 print("모델링 관련 클래스 및 함수 정의 완료.")
+```
+
+## Training & Evaluation
+구성된 데이터셋으로 모델을 학습시키고, AUROC, AUPRC 등의 지표로 예측 성능을 검증한다. 
+```python
+print('Start Training Session')
+print("Load Data")
+
+file_path = '/content/drive/MyDrive/Research/MIMIC4withTransformer/mimic-iv-3.1/dump/processed_data.pkl'
+
+try:
+	with open(file_path, 'rb') as f:
+		loaded_data = pickle.load(f)
+	all_patient_data = loaded_data['all_patient_data']
+	vocab = loaded_data['vocab']
+	print(f"'{file_path}'에서 데이터 로딩 완료.\n")
+except FileNotFoundError:	
+	print(f"오류: '{file_path}' 파일을 찾을 수 없습니다.")
+
+print("Prepare Dataset / DataLoader")
+
+train_data, val_data = train_test_split(all_patient_data, test_size=0.2, random_state=42)
+train_dataset = PatientSequenceDataset(train_data)
+val_dataset = PatientSequenceDataset(val_data)
+
+train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True, collate_fn=lambda b: collate_fn(b, vocab))
+val_loader = DataLoader(val_dataset, batch_size=32, collate_fn=lambda b: collate_fn(b, vocab))
+
+print("데이터 준비 완료.\n")
+print("Reset Model and Start Train")
+
+model = SurvivalPredictor(vocab_size=len(vocab)).to(device)
+trained_model = train_model(model, train_loader, val_loader, num_epochs=5)
+
+print("\n4. 처치 추천 및 생존률 예측 시뮬레이션...")
+
+'''
+예시: 65세 여성 환자, 특정 진단명을 가짐
+vocab에 있는 실제 진단명으로 바꿔야 합니다. 예시: 'DIAG_4019'
+vocab.keys()를 출력하여 사용 가능한 진단명을 확인.
+'''
+
+sample_diag_code = [key for key in vocab.keys() if key.startswith('DIAG_')]
+if not sample_diag_code: sample_diag_code.append('DIAG_DUMMY')
+
+new_patient_info = {
+'age': 65,
+'gender': 'F',
+'diagnoses': [sample_diag_code[0]]}
+
+recommended_sequence, predicted_survival_rate = recommend_and_predict(
+patient_info=new_patient_info,
+model=trained_model,
+vocab=vocab,
+max_steps=3, # 3단계의 처치를 추천
+beam_width=3
+)
+
+print("-" * 50)
+print(" < 최종 예측 결과 >")
+print("-" * 50)
+print(f"환자 정보: {new_patient_info}")
+print("\n▶ 추천되는 처치 순서:")
+for i, treatment in enumerate(recommended_sequence):
+	print(f" {i+1} 단계: {treatment}")
+print("\n▶ 예측 결과:")
+print(f" 위 순서로 치료 시 예측되는 생존률: {predicted_survival_rate * 100:.2f}%")
+print(f" (예측 사망률: {(1-predicted_survival_rate) * 100:.2f}%)")
+print("-" * 50)
 ```
