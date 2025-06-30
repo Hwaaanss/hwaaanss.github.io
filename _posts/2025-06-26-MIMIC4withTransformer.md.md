@@ -137,6 +137,7 @@ df_base.dropna(inplace=True)
 - prescriptions: 처방 관련 정보들을 위의 diagnoses 에 한 작업과 같이 전처리 수행
 - procedures: 처치/시술 관련 정보들을 위의 diagnoses 에 한 작업과 같이 전처리 수행
 - 이후 전처리 한 컬럼들을 concat 하고 정렬해서 별도 dataframe 으로 저장
+
 ```python
 admittime_df = df_base[['hadm_id', 'admittime']]
 
