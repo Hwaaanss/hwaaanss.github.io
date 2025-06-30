@@ -126,6 +126,7 @@ procedures = pd.read_csv('/content/drive/MyDrive/Research/MIMIC4withTransformer/
 #### Merge Data
 subject_id 을 key로 잡고 환자 기본정보들 병합.
 - 기본정보: 환자 고유 ID, 입원 고유 ID, 입원 시각, 나이, 성별, 사망여부
+
 ```python
 df_base = pd.merge(admissions, patients, on='subject_id')[['hadm_id', 'admittime', 'anchor_age', 'gender', 'hospital_expire_flag']].copy()
 df_base.rename(columns={'anchor_age': 'age'}, inplace=True)
@@ -170,6 +171,7 @@ events_df.sort_values(by=['hadm_id', 'time'], inplace=True)
 - special_tokens: transformer가 시퀀스 데이터를 처리하기 위한 토큰들로, 길이가 짧은 부분을 padding 처리하는 토큰인 PAD, 시퀀스의 처음에 들어가는 토큰인 CLS, 환자 기본정보와 처치/시술 등의 정보를 구분하기 위한 토큰인 SEP 으로 구성
 - vocab_list: 위의 모든 리스트들을 합친 리스트
 - vocab: vocab_list 값들과 인덱스들로 만든 dictionary
+
 ```python
 all_event_tokens = events_df['event_value'].unique().tolist()
 
@@ -191,6 +193,7 @@ vocab = {token: i for i, token in enumerate(vocab_list)}
 - diag_sequences: 입원 고유 ID 별로 진단 정보들의 event_value 들을 리스트화 한 것
 - other_sequences: 입원 고유 ID 별로 진단 정보를 제외한 데이터들의 event_value 들을 리스트화 한 것(처치/시술/처방)
 - final_df: 환자 기본 정보와 진단 정보/비 진단 정보들을 모두 left outer join 으로 병합한 것
+
 ```python
 df_base['age_token'] = 'AGE_' + (df_base['age'] // 10).clip(upper=9).astype(str)
 df_base['gender_token'] = 'GENDER_' + df_base['gender']
@@ -217,6 +220,7 @@ final_df['other_list'] = final_df['other_list'].apply(lambda x: x if isinstance(
 - static_ids, diag_ids, other_ids: 결측값 공리스트로 저장했던거 제거
 - input_ids: transformer 모델의 input 값으로써 필요한 토큰 처리 \
 매번 전처리부터 할 수 없으므로 전처리한 데이터를 pkl 파일로 저장
+
 ```python
 def convert_to_final_format(row, vocab):
 	static_ids = [vocab.get(row['age_token']), vocab.get(row['gender_token'])]
@@ -244,7 +248,7 @@ print(f"총 {len(all_patient_data)}명의 환자 데이터가 처리되었습니
 ```
 
 ## Define Model, DataLoader
-생성된 시퀀스를 입력받아 생존률(0~1 사이의 값)을 출력하는 Transformer 기반 모델을 PyTorch로 설계.
+생성된 시퀀스를 입력받아 생존률(0~1 사이의 값)을 출력하는 Transformer 기반 모델을 설계.
 #### PositionalEncoding Class
 - `position`: 0부터 max_len-1까지의 순서(위치)를 나타내는 텐서를 생성 (ex. [[0], [1], [2], ...])
 - `div_term`: Positional Encoding 수식에 사용될 분모 부분을 미리 계산해서 저장. 사인(sin)과 코사인(cos) 함수의 주기를 조절하여 위치별로 고유한 값을 만들어내는 핵심적인 부분
@@ -290,6 +294,7 @@ class PositionalEncoding(nn.Module):
 - `cls_output`: Transformer를 통과한 결과값 중, 가장 맨 앞에 위치한 [CLS] 토큰에 해당하는 출력 벡터만 추출함. 이 벡터는 전체 시퀀스의 의미를 요약, 압축한 대표값으로 사용됨.
 - `survival_prob`: 추출된 [CLS] 토큰의 출력 벡터를 최종 분류기에 넣어 0과 1 사이의 생존 확률 값을 계산함.
 - `return survival_prob`: 계산된 최종 생존 확률을 반환
+
 ```python
 class SurvivalPredictor(nn.Module):
     def __init__(self, vocab_size, d_model=256, nhead=8, num_encoder_layers=6, dim_feedforward=512, dropout=0.1):
@@ -323,6 +328,7 @@ class SurvivalPredictor(nn.Module):
 - `padded_sequences`: 패딩(Padding)을 수행하는 부분. 한 배치 내에서 가장 긴 시퀀스를 기준으로, 나머지 짧은 시퀀스들의 뒷부분에 [PAD] 토큰을 추가하여 모든 시퀀스의 길이를 동일하게 맞춤.
 - `attention_masks`: 패딩된 부분([PAD] 토큰)은 True, 실제 데이터는 False인 마스크를 생성함. 이 마스크는 Transformer가 의미 없는 패딩 부분에는 attention 하지 않도록 알려주는 역할
 - `labels`: 분리되어 있던 개별 label 텐서들을 하나의 텐서로 쌓아줌.
+
 ```python
 class PatientSequenceDataset(Dataset):
     def __init__(self, data):
@@ -346,6 +352,7 @@ def collate_fn(batch, vocab):
 딥러닝응용1 강의에서 배운 모델 정의 형식을 기반으로 수정함.
 - `optimizer`: AdamW
 - `criterion`: BCELoss
+
 ```python
 def train_model(model, train_loader, val_loader, lr=1e-4, num_epochs=10):
     model.to(device)
@@ -412,6 +419,7 @@ def train_model(model, train_loader, val_loader, lr=1e-4, num_epochs=10):
 - `best_sequence, best_survival_rate`: 모든 탐색이 끝난 후, 최종적으로 남은 빔 중에서 가장 점수가 높은 첫 번째 경로를 최적의 결과로 선택
 - `sep_index`, `recommended_ids`: 최적의 시퀀스에서 [SEP] 토큰의 위치를 찾아 그 이후의 처치에 해당하는 ID들만 추출
 - `recommended_treatments`: 추출된 처치 ID들을 id2token 사전을 이용해 다시 디코딩
+
 ```python
 def recommend_and_predict(patient_info, model, vocab, max_steps=5, beam_width=3):
     model.eval()
