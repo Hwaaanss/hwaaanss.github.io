@@ -17,11 +17,11 @@ minimal_mistakes_skin    : "default" # "air", "aqua", "contrast", "dark", "dirt"
 # Site Settings
 locale                   : "ko-KR"
 rtl                      : # true, false (default) # turns direction of the page into right to left for RTL languages
-title                    : "Hwan's ML/AI Study Blog"
+title                    : "Hwan's ML/BI Study Blog"
 title_separator          : "|"
 subtitle                 : # "enjoy"
 name                     : "Hwan"
-description              : "ML/AI 분야를 공부합니다."
+description              : "ML/BI 분야를 공부합니다."
 published                : True
 url                      : "https://hwaaanss.github.io"
 baseurl                  : # the subpath of your site, e.g. "/blog"
@@ -116,7 +116,7 @@ analytics:
 author:
   name             : "Hwan"
   avatar           : # path of avatar image, e.g. "/assets/images/bio-photo.jpg"
-  bio              : "ML/AI 분야를 공부합니다."
+  bio              : "ML/BI 분야를 공부합니다."
   location         : "Seoul"
   email            :
   links:
@@ -126,8 +126,8 @@ author:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/hwaaanss"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
+    # - label: "Instagram"
+      # icon: "fab fa-fw fa-instagram"
       # url: "https://instagram.com/"
 
 # Site Footer
@@ -139,8 +139,8 @@ footer:
     - label: "GitHub"
       icon: "fab fa-fw fa-github"
       url: "https://github.com/hwaaanss"
-    - label: "Instagram"
-      icon: "fab fa-fw fa-instagram"
+    # - label: "Instagram"
+    #   icon: "fab fa-fw fa-instagram"
       # url: "https://instagram.com/"
 
 
