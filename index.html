@@ -68,13 +68,13 @@ author_profile: true
 
   /* 호버 효과: 마우스를 올렸을 때 */
   .list-item:hover {
-    transform: translateY(-3px);
-    background-color: var(--accent-color);
-    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 강조 */
+  background-color: var(--bg-color); /* 배경색 유지 */
   }
   .list-item:hover .category-link,
   .list-item:hover .post-count {
-    color: #fff;
+  color: var(--primary-text-color);
   }
   
   /* 카테고리 링크 */
