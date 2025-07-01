@@ -624,7 +624,7 @@ print(f"해당 환자의 실제 생존 여부: {'생존' if random_test_patient[
 
     4. Visualize and Save Training History...
 
-![graph](/images/2025-06-26-mimic4_tf/graph.png) \
+![graph](/images/2025-06-26-mimic4_tf/graph.png)
 
     Training plot saved to 'training_plot/1e-05_20.png'
 
