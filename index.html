@@ -1,173 +1,52 @@
 ---
 layout: page
-author_profile: false
-title: Home
+author_profile: true
+title: Categories
 ---
-<style>
-  :root {
-    --primary-color: #5e72e4;
-    --background-color: #f8f9fe;
-    --card-background: #ffffff;
-    --text-color: #525f7f;
-    --heading-color: #32325d;
-    --border-color: #e9ecef;
-  }
-  .layout-wrapper {
-    max-width: 1100px;
-    margin-left: auto;
-    margin-right: auto;
-    padding-left: 15px;
-    padding-right: 15px;
-  }
-  .homepage-grid {
-    display: grid;
-    grid-template-columns: 2fr 1fr;
-    gap: 2.5rem;
-  }
-  .hero-section {
-    grid-column: 1 / -1;
-    text-align: center;
-    padding: 3rem 1rem;
-    margin-bottom: 2rem;
-    background-color: var(--background-color);
-    border-radius: 8px;
-  }
-  .hero-section h1 {
-    font-size: 2.5rem;
-    color: var(--heading-color);
-    font-weight: 600;
-  }
-  .hero-section p {
-    font-size: 1.1rem;
-    color: var(--text-color);
-  }
-  .main-content h2 {
-    font-size: 1.8rem;
-    color: var(--heading-color);
-    margin-bottom: 1.5rem;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.5rem;
-  }
-  .featured-card {
-    background: var(--card-background);
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .featured-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-  }
-  .featured-card h3 a {
-    color: var(--heading-color);
-    text-decoration: none;
-    font-size: 1.3rem;
-  }
-  .featured-card .post-meta {
-    font-size: 0.9rem;
-    color: #8898aa;
-    margin-bottom: 0.5rem;
-  }
-  .recent-posts ul {
-    list-style: none; padding: 0;
-  }
-  .recent-posts li a {
-    text-decoration: none; color: var(--text-color); font-size: 1.1rem;
-  }
-  .sidebar .widget {
-    background: var(--card-background);
-    padding: 1.5rem;
-    border-radius: 8px;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  }
-  .sidebar h3 {
-    font-size: 1.2rem;
-    color: var(--heading-color);
-    margin-top: 0;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 0.5rem;
-  }
-  .profile-widget {
-    text-align: center;
-  }
-  .profile-widget img {
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    margin-bottom: 1rem;
-    border: 3px solid var(--primary-color);
-  }
-  .category-widget .categories-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-  .category-widget .category-item {
-    background: var(--background-color);
-    padding: 5px 12px;
-    border-radius: 15px;
-    font-size: 0.9rem;
-  }
-  .category-widget .category-item a {
-    text-decoration: none; color: var(--text-color); font-weight: 500;
-  }
-  @media (max-width: 768px) {
-    .homepage-grid {
-      grid-template-columns: 1fr;
-    }
-  }
-</style>
 
-<div class="hero-section">
-  <h1>Your Blog Name</h1>
-  <p>AI와 데이터 사이언스에 대한 깊이 있는 탐구</p>
-</div>
-
-<div class="layout-wrapper">
-  <div class="homepage-grid">
-    <main class="main-content">
-      <section class="featured-posts">
-        <h2>⭐ 대표 포스트</h2>
-        {% assign featured = site.posts | where: "featured", true | slice: 0, 2 %}
-        {% for post in featured %}
-          <div class="featured-card">
-            <p class="post-meta">{{ post.date | date: "%Y년 %m월 %d일" }} · {% for cat in post.categories %}{{ cat }}{% endfor %}</p>
-            <h3><a href="{{ post.url | relative_url }}">{{ post.title }}</a></h3>
-            <p>{{ post.excerpt | strip_html | truncatewords: 20 }}</p>
-          </div>
-        {% endfor %}
-      </section>
-
-      <section class="recent-posts">
-        <h2>📄 최신 글</h2>
-        <ul>
-          {% for post in site.posts limit: 5 %}
-            <li><a href="{{ post.url | relative_url }}">{{ post.title }}</a></li>
-          {% endfor %}
-        </ul>
-      </section>
-    </main>
-
-    <aside class="sidebar">
-      <div class="widget profile-widget">
-        <img src="https://via.placeholder.com/100" alt="Profile Picture">
-        <h3>Your Name</h3>
-        <p>데이터를 통해 세상을 이해하는 개발자입니다.</p>
+<div class="archive">
+  <h2 class="archive-title" style="text-align: center; margin-bottom: 2rem;">카테고리 (Categories)</h2>
+  <div class="entries-list">
+    {% for category in site.categories %}
+      <div class="list-item">
+        <a href="{{ site.baseurl }}/categories/#{{ category | first | cgi_escape }}" class="category-link">
+          {{ category | first }}
+        </a>
+        <span class="post-count">({{ category | last | size }})</span>
       </div>
-
-      <div class="widget category-widget">
-        <h3>🏷️ 카테고리</h3>
-        <div class="categories-list">
-          {% for category in site.categories %}
-            <div class="category-item">
-              <a href="{{ site.baseurl }}/categories/#{{ category | first | cgi_escape }}">{{ category | first }} ({{ category | last | size }})</a>
-            </div>
-          {% endfor %}
-        </div>
-      </div>
-    </aside>
+    {% endfor %}
   </div>
 </div>
+
+<style>
+  .entries-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* 태그 사이의 간격 */
+    justify-content: center; /* 가운데 정렬 */
+    padding: 0;
+    list-style: none;
+  }
+  .list-item {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px; /* 동글동글한 태그 모양 */
+    transition: all 0.2s ease-in-out;
+    background-color: #f9f9f9;
+  }
+  .list-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #f0f0f0;
+  }
+  .category-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  .post-count {
+    margin-left: 8px;
+    color: #888;
+    font-size: 0.9em;
+  }
+</style>
