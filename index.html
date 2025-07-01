@@ -1,4 +1,52 @@
 ---
-layout: home
+layout: page
 author_profile: true
+title: Categories
 ---
+
+<div class="archive">
+  <h2 class="archive-title" style="text-align: center; margin-bottom: 2rem;">카테고리 (Categories)</h2>
+  <div class="entries-list">
+    {% for category in site.categories %}
+      <div class="list-item">
+        <a href="{{ site.baseurl }}/categories/#{{ category | first | cgi_escape }}" class="category-link">
+          {{ category | first }}
+        </a>
+        <span class="post-count">({{ category | last | size }})</span>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<style>
+  .entries-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* 태그 사이의 간격 */
+    justify-content: center; /* 가운데 정렬 */
+    padding: 0;
+    list-style: none;
+  }
+  .list-item {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px; /* 동글동글한 태그 모양 */
+    transition: all 0.2s ease-in-out;
+    background-color: #f9f9f9;
+  }
+  .list-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #f0f0f0;
+  }
+  .category-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  .post-count {
+    margin-left: 8px;
+    color: #888;
+    font-size: 0.9em;
+  }
+</style>
