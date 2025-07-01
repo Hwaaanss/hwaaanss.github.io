@@ -3,118 +3,49 @@ layout: page
 author_profile: true
 ---
 
-<style>
-  /* :root 변수: 디자인 시스템의 핵심입니다. 여기서 색상과 폰트를 관리합니다. */
-  :root {
-    --bg-color: #f5f5f7; /* 애플의 라이트 모드 배경색과 유사 */
-    --card-bg-color: #ffffff; /* 카드 배경색 */
-    --primary-text-color: #1d1d1f; /* 기본 텍스트 색상 (거의 검은색) */
-    --secondary-text-color: #6e6e73; /* 보조 텍스트 색상 (회색) */
-    --accent-color: #007aff; /* 애플의 대표적인 파란색 */
-    --separator-color: #d2d2d7; /* 구분선 색상 */
-    --font-family-apple: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  }
-
-  /* 이 코드는 페이지 전체의 배경색과 폰트를 설정합니다. 테마에 따라 !important가 필요할 수 있습니다. */
-  body {
-    background-color: var(--bg-color) !important;
-    font-family: var(--font-family-apple);
-  }
-
-  /* 전체를 감싸는 메인 카드 컨테이너 */
-  .apple-ui-container {
-    max-width: 820px;
-    margin: 4rem auto;
-    background-color: var(--card-bg-color);
-    border-radius: 20px;
-    padding: 40px 50px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-    border: 1px solid rgba(0, 0, 0, 0.05);
-    text-align: center;
-  }
-
-  /* 메인 타이틀 */
-  .archive-title {
-    font-size: 2.8rem; /* 44px */
-    font-weight: 600;
-    color: var(--primary-text-color);
-    margin-bottom: 12px;
-  }
-
-  /* 서브 타이틀 */
-  .archive-subtitle {
-    font-size: 1.3rem; /* 21px */
-    color: var(--secondary-text-color);
-    margin-bottom: 40px;
-  }
-
-  /* 카테고리 목록을 감싸는 리스트 */
-  .entries-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    padding: 0;
-    list-style: none;
-  }
-
-  /* 개별 카테고리 아이템 (태그) */
-  .list-item {
-    background-color: var(--bg-color);
-    border-radius: 30px; /* 동글동글한 Pill 모양 */
-    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); /* 부드러운 전환 효과 */
-    border: 1px solid transparent;
-  }
-
-  /* 호버 효과: 마우스를 올렸을 때 */
-  .list-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* 그림자 강조 */
-  background-color: var(--bg-color); /* 배경색 유지 */
-  }
-  .list-item:hover .category-link,
-  .list-item:hover .post-count {
-  color: var(--primary-text-color);
-  }
-  
-  /* 카테고리 링크 */
-  .category-link {
-    display: inline-block;
-    padding: 12px 24px;
-    font-weight: 500;
-    font-size: 1rem;
-    text-decoration: none;
-    color: var(--primary-text-color);
-    transition: color 0.25s ease;
-  }
-
-  /* 포스트 개수 (괄호) - 링크와 합쳐서 스타일 통일 */
-  .post-count {
-    display: none; /* 링크와 합쳤으므로 기존 괄호는 숨김 처리 */
-  }
-  
-  /* 모바일 화면 대응 */
-  @media (max-width: 768px) {
-    .apple-ui-container {
-      margin: 2rem 1rem;
-      padding: 30px 25px;
-    }
-    .archive-title { font-size: 2.2rem; }
-    .archive-subtitle { font-size: 1.1rem; }
-  }
-</style>
-
-<div class="apple-ui-container">
-  <h2 class="archive-title">Categories</h2>
-  <p class="archive-subtitle">관심 있는 주제를 선택하여 관련 글들을 탐색해 보세요.</p>
-  
+<div class="archive">
+  <h2 class="archive-title" style="text-align: center; margin-bottom: 2rem;">카테고리 (Categories)</h2>
   <div class="entries-list">
     {% for category in site.categories %}
       <div class="list-item">
         <a href="{{ site.baseurl }}/categories/#{{ category | first | cgi_escape }}" class="category-link">
-          {{ category | first }} ({{ category | last | size }})
+          {{ category | first }}
         </a>
+        <span class="post-count">({{ category | last | size }})</span>
       </div>
     {% endfor %}
   </div>
 </div>
+
+<style>
+  .entries-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px; /* 태그 사이의 간격 */
+    justify-content: center; /* 가운데 정렬 */
+    padding: 0;
+    list-style: none;
+  }
+  .list-item {
+    padding: 10px 20px;
+    border: 1px solid #e0e0e0;
+    border-radius: 25px; /* 동글동글한 태그 모양 */
+    transition: all 0.2s ease-in-out;
+    background-color: #f9f9f9;
+  }
+  .list-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: #f0f0f0;
+  }
+  .category-link {
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+  }
+  .post-count {
+    margin-left: 8px;
+    color: #888;
+    font-size: 0.9em;
+  }
+</style>
