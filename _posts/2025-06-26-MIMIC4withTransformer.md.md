@@ -584,4 +584,74 @@ else:
 print(f"해당 환자의 실제 생존 여부: {'생존' if random_test_patient['label'] == 0 else '사망'}")
 ```
 
-검토 사항: 추천한 시술들이 적합한지 의료전문가에게 추천 및 본 모델은 단지 "추천을 위한 모델"임을 강조.
+## Output
+코드 실행 결과는 아래와 같다.
+
+    Start Training Session
+    1. Load Data...
+    Finish load data at dir '/kaggle/input/mimic4preproc/processed_data.pkl'
+
+    2. Prepare Dataset and DataLoader...
+    Finish Loading.
+
+    3. Reset Model and Start to Training...
+
+    --- Start Training ---
+    /usr/local/lib/python3.11/dist-packages/torch/nn/modules/transformer.py:508: UserWarning: The PyTorch API of nested tensors is in prototype stage and will change in the near future. We recommend specifying layout=torch.jagged when constructing a nested tensor, as this layout receives active development, has better operator coverage, and works with torch.compile. (Triggered internally at /pytorch/aten/src/ATen/NestedTensorImpl.cpp:178.)
+    output = torch._nested_tensor_from_mask(
+    Epoch 1/20 | Train Loss: 0.0432 | Val Loss: 0.0298 | Val AUC: 0.9879
+    Epoch 2/20 | Train Loss: 0.0284 | Val Loss: 0.0254 | Val AUC: 0.9936
+    Epoch 3/20 | Train Loss: 0.0253 | Val Loss: 0.0237 | Val AUC: 0.9950
+    Epoch 4/20 | Train Loss: 0.0232 | Val Loss: 0.0241 | Val AUC: 0.9952
+    Epoch 5/20 | Train Loss: 0.0221 | Val Loss: 0.0218 | Val AUC: 0.9957
+    Epoch 6/20 | Train Loss: 0.0213 | Val Loss: 0.0225 | Val AUC: 0.9957
+    Epoch 7/20 | Train Loss: 0.0205 | Val Loss: 0.0229 | Val AUC: 0.9960
+    Epoch 8/20 | Train Loss: 0.0197 | Val Loss: 0.0218 | Val AUC: 0.9957
+    Epoch 9/20 | Train Loss: 0.0192 | Val Loss: 0.0216 | Val AUC: 0.9959
+    Epoch 10/20 | Train Loss: 0.0185 | Val Loss: 0.0214 | Val AUC: 0.9960
+    Epoch 11/20 | Train Loss: 0.0180 | Val Loss: 0.0216 | Val AUC: 0.9959
+    Epoch 12/20 | Train Loss: 0.0176 | Val Loss: 0.0251 | Val AUC: 0.9959
+    Epoch 13/20 | Train Loss: 0.0171 | Val Loss: 0.0222 | Val AUC: 0.9959
+    Epoch 14/20 | Train Loss: 0.0167 | Val Loss: 0.0223 | Val AUC: 0.9960
+    Epoch 15/20 | Train Loss: 0.0161 | Val Loss: 0.0223 | Val AUC: 0.9957
+    Epoch 16/20 | Train Loss: 0.0156 | Val Loss: 0.0238 | Val AUC: 0.9958
+    Epoch 17/20 | Train Loss: 0.0152 | Val Loss: 0.0242 | Val AUC: 0.9955
+    Epoch 18/20 | Train Loss: 0.0148 | Val Loss: 0.0236 | Val AUC: 0.9958
+    Epoch 19/20 | Train Loss: 0.0146 | Val Loss: 0.0231 | Val AUC: 0.9956
+    Epoch 20/20 | Train Loss: 0.0138 | Val Loss: 0.0252 | Val AUC: 0.9953
+    --- 모델 학습 완료 ---
+
+
+    4. Visualize and Save Training History...
+![graph](/images/2025-06-26-mimic4_tf/graph.png) \
+    Training plot saved to 'training_plot/1e-05_20.png'
+
+    5. Recommend Treatments and Predict Survival ratio Simulation...
+    --------------------------------------------------
+                < 최종 예측 결과 >
+    --------------------------------------------------
+    추출된 Test 환자 정보: {'age': 60, 'gender': 'F', 'diagnoses': ['DIAG_71101', 'DIAG_71103', 'DIAG_V1582', 'DIAG_04102', 'DIAG_2859', 'DIAG_32723', 'DIAG_73390', 'DIAG_56400', 'DIAG_72999']}
+
+    ▶ 추천되는 처치 순서:
+    1 단계: PROC_5A12012
+    2 단계: PROC_5A1935Z
+    3 단계: MED_Soln.
+    4 단계: MED_Senna Laxative
+
+    ▶ 예측 결과:
+    위 순서로 치료 시 예측되는 생존률: 99.37%
+    --------------------------------------------------
+
+    ▶ 실제 처치 순서 (상위 4개):
+    1 단계: PROC_8191
+    2 단계: MED_Omeprazole
+    3 단계: MED_Influenza Virus Vaccine
+    4 단계: MED_Sodium Chloride 0.9%  Flush
+    해당 환자의 실제 생존 여부: 생존
+
+
+## Check List
+1. 프로젝트 주제의 유의미성 - 이러한 연구(특히 시술추천)가 의학계(현직 의사들)에서 과연 인정될만한 주제인가? 환자의 그때그때의 바이탈을 체크하고 해야되는데 이걸 예측한다고 해서 의미 있는가?
+2. 모델이 추천한 순서의 적합성은 실제 의사(의료 면허 소지자)에게 받는 것이 맞는가? 그럼 검증 받는 사람마다 괜찮다 아니다가 다를 수 있는 부분인거면 객관적으로 사용될 수 없는거 아닌가?
+3. 과한 욕심일 수 있지만 학부생 수준의 논문으로라도 게재할 수 없는가?
+4. 모델의 성능을 최대한으로 향상시킬 때 낮은(혹은 scheduler 사용하는) lr, 높은 epoch, 약간의 규제가 좋은 방향인가?
