@@ -585,7 +585,8 @@ print(f"해당 환자의 실제 생존 여부: {'생존' if random_test_patient[
 ```
 
 ## Output
-코드 실행 결과는 아래와 같다.
+코드 실행 결과는 아래와 같다. 모델은 test dataset 에서 랜덤으로 추출된 환자 정보를 가져와서 나이, 성별, 진단코드를 출력하고 Beam search 를 통해 찾은 최적의 치료 순서를 제시한다. 이후 해당 환자가 제시한 치료 순서를 따랐을 때의 생존률을 예측해서 출력한다. 마지막으로 해당 환자의 실제 치료 순서와 생존 여부를 출력하며 제시한 방법에 있어 당위성을 표현하고자 한다. \
+모델의 학습은 loss 값이 작아 잘 된 것처럼 보이긴 하지만 epoch 수도 적고 다양한 방법을 이용해서 성능을 더욱 향상시킬 수 있을 것으로 보인다. 예를 들면 cosine annealing learning rate scheduler 를 적용하고, epoch 수를 늘리고, 어느정도의 규제를 거는 등의 작업을 하거나, 고도화된 최적화 기법을 사용하거나, feature engineering 을 더 하는 등이 있다.
 
     Start Training Session
     1. Load Data...
@@ -597,8 +598,6 @@ print(f"해당 환자의 실제 생존 여부: {'생존' if random_test_patient[
     3. Reset Model and Start to Training...
 
     --- Start Training ---
-    /usr/local/lib/python3.11/dist-packages/torch/nn/modules/transformer.py:508: UserWarning: The PyTorch API of nested tensors is in prototype stage and will change in the near future. We recommend specifying layout=torch.jagged when constructing a nested tensor, as this layout receives active development, has better operator coverage, and works with torch.compile. (Triggered internally at /pytorch/aten/src/ATen/NestedTensorImpl.cpp:178.)
-    output = torch._nested_tensor_from_mask(
     Epoch 1/20 | Train Loss: 0.0432 | Val Loss: 0.0298 | Val AUC: 0.9879
     Epoch 2/20 | Train Loss: 0.0284 | Val Loss: 0.0254 | Val AUC: 0.9936
     Epoch 3/20 | Train Loss: 0.0253 | Val Loss: 0.0237 | Val AUC: 0.9950
@@ -651,6 +650,8 @@ print(f"해당 환자의 실제 생존 여부: {'생존' if random_test_patient[
     4 단계: MED_Sodium Chloride 0.9%  Flush
     해당 환자의 실제 생존 여부: 생존
 
+## In closing
+(느낀점, 알게 된 점, ... 등 작성)
 
 ## Check List
 1. 프로젝트 주제의 유의미성 - 이러한 연구(특히 시술추천)가 의학계(현직 의사들)에서 과연 인정될만한 주제인가? 환자의 그때그때의 바이탈을 체크하고 해야되는데 이걸 예측한다고 해서 의미 있는가?
