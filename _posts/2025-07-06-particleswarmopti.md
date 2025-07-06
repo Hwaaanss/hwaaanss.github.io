@@ -1,24 +1,20 @@
 ---
 layout: single
-title: "자연의 지혜를 빌린 최적화, Particle Swarm Optimization (PSO) 탐구 기록"
-excerpt: "Gradient 없이도 최적해를 찾아가는 똑똑한 입자들의 군무(群舞)"
+title: "Particle Swarm Optimization (PSO) 탐구 기록 (작성중)"
+excerpt: "하나가 아닌 여럿이서 최적의 답을 찾아나가는 최적화 알고리즘"
 mathjax: true
 toc: true
 toc_sticky: true
 toc_label: Contents
-categories:
-  - AI
-tags:
-  - Optimization
-  - Metaheuristic
-  - PSO
+categories: Research
+tags: [DL, Optimization]
 ---
 
 ## Idea
 학교에서 들은 딥러닝 관련 강의에서 배웠던 딥러닝 관련 optimizer들은 SGD, RMSProp, AdaGrad, Adam이 있다. 하지만 "이 최적화 알고리즘들은 혼자서 움직이는데 local minima 에서의 탈출이 과연 실제 데이터풀에서도 이론처럼 잘 될까?" 라는 의문이 계속 들었다. 또한 단순한 최적화 기법으로만 알고 있다가 유튜버 혁펜하임의 영상을 보다가 최적화이론이라는게 있다는 것을 알게 되었다. 그래서 알아보니 내가 알고 있던 최적화 기법들은 현재는 정말 일반적인 기법이고, 더 고도화되거나 창의적인 아이디어를 이용한 기법들이 많은 것을 알고 호기심이 생겨 계속해서 공부를 이어갔다. 이 호기심은 자연에서 영감을 얻은 Metaheuristic 최적화 알고리즘으로 이어졌다. 그중에서도 새나 물고기 떼의 사회적 행동을 모방한 **Particle Swarm Optimization (PSO)**가 직관적이면서도 강력해 보여서, 이번 기회에 제대로 파헤쳐 보기로 마음먹었다.
 
 ## Details
-**연구 정의**: 개별 입자들이 각자 탐색한 최적의 경험(Personal Best)과 집단 전체가 공유하는 최적의 경험(Global Best)을 바탕으로, 문제 공간을 효율적으로 탐색하여 전역 최적해(Global Optimum)를 찾는 알고리즘을 이해하고 구현하는 것을 목표로 함
+**연구 정의**: 개별 입자들이 각자 탐색한 최적의 경험=과 집단 전체가 공유하는 최적의 경험=을 바탕으로, 문제 공간을 효율적으로 탐색하여 전역 최적해(Global Optimum)를 찾는 알고리즘을 이해하고 구현하는 것을 목표로 함
 
 #### 알고리즘의 주요 학습 포인트
 1.  **입자(Particle)의 상태**: 각 입자는 위치와 속도라는 두 가지 핵심 정보를 가진다. 위치는 문제에 대한 하나의 해답 후보이고, 속도는 이 후보가 다음 스텝에서 어느 방향으로 얼마나 이동할지를 결정하는 '벡터'라고 볼 수 있다
@@ -60,23 +56,25 @@ $$
 #### Phase 1: PSO 알고리즘 구현
 먼저 필요한 라이브러리를 임포트하고, PSO 알고리즘의 핵심 로직을 클래스로 구현했다.
 
-1. 라이브러리 임포트 및 목적 함수 정의
-최적화할 대상 함수를 정의. 여기서는 간단한 2차 함수를 사용했다.
+1. 라이브러리 임포트
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
-
-def objective_function(particle_position):
-    x, y = particle_position
-    return x**2 + y**2
 ```
 
-2. PSO 최적화기 클래스 정의
-알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
+2. PSO 최적화기 클래스 정의 및 목적 함수 정의
+알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계하고, 최적화할 대상 함수를 정의했다. 목적 함수는 Rastrigin Function를 사용했다. Rastrigin Function는 최적화 알고리즘 벤치마크에 자주 사용되는 함수로, Global optimum은 하나지만 그 주변에 Local optimum이 많이 존재하는 함수이다. 
 
 ```python
+def rastrigin_function(particle_position):
+    x, y = particle_position
+    A = 10
+    return (A * 2 + 
+            (x**2 - A * np.cos(2 * np.pi * x)) + 
+            (y**2 - A * np.cos(2 * np.pi * y)))
+
 class PSO:
     def __init__(self, objective_func, n_particles, n_dimensions, bounds, w=0.5, c1=1.5, c2=1.5):
         self.objective_func = objective_func
@@ -129,12 +127,12 @@ class PSO:
 구현된 PSO 클래스를 이용해 실제로 최적화 과정을 실행하고, Matplotlib을 통해 입자들이 움직이는 모습을 애니메이션으로 그렸다.
 
 ```python
-N_PARTICLES = 30
+N_PARTICLES = 50
 N_DIMENSIONS = 2
-BOUNDS = [(-10, 10), (-10, 10)]
-N_ITERATIONS = 50
+BOUNDS = [(-5.12, 5.12), (-5.12, 5.12)]
+N_ITERATIONS = 150
 
-pso_optimizer = PSO(objective_function, N_PARTICLES, N_DIMENSIONS, BOUNDS)
+pso_optimizer = PSO(rastrigin_function, N_PARTICLES, N_DIMENSIONS, BOUNDS)
 
 fig, ax = plt.subplots(figsize=(8, 8))
 ax.set_xlim(BOUNDS[0])
@@ -143,11 +141,11 @@ ax.set_title('Particle Swarm Optimization')
 ax.set_xlabel('x')
 ax.set_ylabel('y')
 
-x = np.linspace(BOUNDS[0][0], BOUNDS[0][1], 100)
-y = np.linspace(BOUNDS[1][0], BOUNDS[1][1], 100)
+x = np.linspace(BOUNDS[0][0], BOUNDS[0][1], 200)
+y = np.linspace(BOUNDS[1][0], BOUNDS[1][1], 200)
 X, Y = np.meshgrid(x, y)
-Z = objective_function([X, Y])
-ax.contour(X, Y, Z, levels=np.logspace(0, 3, 10), cmap='viridis_r')
+Z = rastrigin_function([X, Y])
+ax.contour(X, Y, Z, levels=np.linspace(0, 100, 21), cmap='viridis_r') 
 
 particles_scatter = ax.scatter([], [], c='blue', alpha=0.7, label='Particles')
 gbest_scatter = ax.scatter([], [], c='red', marker='*', s=200, label='Global Best')
@@ -156,13 +154,11 @@ title_text = ax.text(0.02, 0.95, '', transform=ax.transAxes)
 
 def animate(i):
     positions, gbest_pos, gbest_val = pso_optimizer.update()
-    
     particles_scatter.set_offsets(positions)
     gbest_scatter.set_offsets(gbest_pos)
     title_text.set_text(f'Iteration: {i+1}, gbest_val: {gbest_val:.4f}')
-    
     return particles_scatter, gbest_scatter, title_text
 
 anim = FuncAnimation(fig, animate, frames=N_ITERATIONS, interval=100, blit=True)
-anim.save('pso_animation.gif', writer='pillow', fps=10)
+anim.save('pso_rastrigin_animation.gif', writer='pillow', fps=30)
 ```
