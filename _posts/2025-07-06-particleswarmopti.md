@@ -40,8 +40,8 @@ v_{i}(t+1) = w \cdot v_{i}(t) + c_1 \cdot r_1 \cdot (\text{pbest}_{i} - x_{i}(t)
 $$
 
 -   $w \cdot v_{i}(t)$: **관성(Inertia)**. "가던 길을 계속 가려는 성질"이다. 이 값이 크면 넓은 영역을 탐색하려는 경향이 강해지고, 작으면 현재 위치 주변을 세밀하게 탐색하려는 경향이 강해진다.
--   $c_1 \cdot r_1 \cdot (\text{pbest}_{i} - x_{i}(t))$: **인지적 요소(Cognitive Component)**. "그래도 내 경험상 거기가 제일 좋았지"라며 자신의 최고 경험으로 회귀하려는 힘으로 볼 수 있다. 개인의 '고집'이나 '확신'에 비유할 수 있다.
--   $c_2 \cdot r_2 \cdot (\text{gbest} - x_{i}(t))$: **사회적 요소(Social Component)**. "다들 저기가 제일 좋다더라"라며 집단의 성공을 따르려는 힘으로 비유할 수 있다. '대세'를 따르거나 '동조'하는 사회적 행동과 닮았다.
+-   $c_1 \cdot r_1 \cdot (\text{pbest}_{i} - x_{i}(t))$: **인지적 요소(Cognitive Component)**. "그래도 내 경험상 거기가 제일 좋았지"라며 자신의 최고 경험으로 회귀하려는 힘으로 볼 수 있다. 개인의 고집이나 확신에 비유할 수 있다.
+-   $c_2 \cdot r_2 \cdot (\text{gbest} - x_{i}(t))$: **사회적 요소(Social Component)**. "다들 저기가 제일 좋다더라"라며 집단의 성공을 따르려는 힘으로 비유할 수 있다. 대세를 따르거나 동조하는 사회적 행동과 닮았다.
 
 여기서 $r_1, r_2$라는 랜덤 값이 곱해지는 점이 재미있다. 이 값들이 없다면 모든 입자는 `pbest`와 `gbest`를 향해 직선적으로만 움직일 것이다. 이는 너무 단조로워서 local optimum에 빠지기 쉽다. 랜덤 값을 통해 약간의 창의성 혹은 변덕을 부여함으로써, 입자들이 더 다양하고 예측 불가능한 경로로 탐색하게 하여 더 나은 해를 찾을 가능성을 열어주는 것이다.
 
@@ -60,71 +60,70 @@ $$
 #### Phase 1: PSO 알고리즘 구현
 먼저 필요한 라이브러리를 임포트하고, PSO 알고리즘의 핵심 로직을 클래스로 구현했다.
 
-1.  **라이브러리 임포트 및 목적 함수 정의**
-    최적화할 대상 함수를 정의. 여기서는 간단한 2차 함수를 사용했다.
+1. 라이브러리 임포트 및 목적 함수 정의
+최적화할 대상 함수를 정의. 여기서는 간단한 2차 함수를 사용했다.
 
-    ```python
-    import numpy as np
-    import matplotlib.pyplot as plt
-    from matplotlib.animation import FuncAnimation
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.animation import FuncAnimation
 
-    def objective_function(particle_position):
-        x, y = particle_position
-        return x**2 + y**2
-    ```
+def objective_function(particle_position):
+    x, y = particle_position
+    return x**2 + y**2
+```
 
-2.  **PSO 최적화기 클래스 정의**
-    알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
+2. PSO 최적화기 클래스 정의
+알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
 
-    ```python
-    class PSO:
-        def __init__(self, objective_func, n_particles, n_dimensions, bounds, w=0.5, c1=1.5, c2=1.5):
-            self.objective_func = objective_func
-            self.n_particles = n_particles
-            self.n_dimensions = n_dimensions
-            self.bounds = bounds
+```python
+class PSO:
+    def __init__(self, objective_func, n_particles, n_dimensions, bounds, w=0.5, c1=1.5, c2=1.5):
+        self.objective_func = objective_func
+        self.n_particles = n_particles
+        self.n_dimensions = n_dimensions
+        self.bounds = bounds
+        
+        self.w = w
+        self.c1 = c1
+        self.c2 = c2
+
+        self.particles_pos = np.random.uniform(bounds[0][0], bounds[0][1], (n_particles, n_dimensions))
+        self.particles_vel = np.zeros((n_particles, n_dimensions))
+        
+        self.pbest_pos = self.particles_pos.copy()
+        self.pbest_val = np.array([self.objective_func(p) for p in self.pbest_pos])
+        
+        min_pbest_idx = np.argmin(self.pbest_val)
+        self.gbest_pos = self.pbest_pos[min_pbest_idx].copy()
+        self.gbest_val = self.pbest_val[min_pbest_idx]
+
+    def update(self):
+        for i in range(self.n_particles):
+            r1 = np.random.rand(self.n_dimensions)
+            r2 = np.random.rand(self.n_dimensions)
             
-            self.w = w
-            self.c1 = c1
-            self.c2 = c2
-
-            self.particles_pos = np.random.uniform(bounds[0][0], bounds[0][1], (n_particles, n_dimensions))
-            self.particles_vel = np.zeros((n_particles, n_dimensions))
+            inertia_term = self.w * self.particles_vel[i]
+            cognitive_term = self.c1 * r1 * (self.pbest_pos[i] - self.particles_pos[i])
+            social_term = self.c2 * r2 * (self.gbest_pos - self.particles_pos[i])
             
-            self.pbest_pos = self.particles_pos.copy()
-            self.pbest_val = np.array([self.objective_func(p) for p in self.pbest_pos])
+            self.particles_vel[i] = inertia_term + cognitive_term + social_term
             
-            min_pbest_idx = np.argmin(self.pbest_val)
-            self.gbest_pos = self.pbest_pos[min_pbest_idx].copy()
-            self.gbest_val = self.pbest_val[min_pbest_idx]
-
-        def update(self):
-            for i in range(self.n_particles):
-                r1 = np.random.rand(self.n_dimensions)
-                r2 = np.random.rand(self.n_dimensions)
-                
-                inertia_term = self.w * self.particles_vel[i]
-                cognitive_term = self.c1 * r1 * (self.pbest_pos[i] - self.particles_pos[i])
-                social_term = self.c2 * r2 * (self.gbest_pos - self.particles_pos[i])
-                
-                self.particles_vel[i] = inertia_term + cognitive_term + social_term
-                
-                self.particles_pos[i] += self.particles_vel[i]
-                
-                self.particles_pos[i] = np.clip(self.particles_pos[i], self.bounds[0][0], self.bounds[0][1])
-
-                current_val = self.objective_func(self.particles_pos[i])
-                if current_val < self.pbest_val[i]:
-                    self.pbest_val[i] = current_val
-                    self.pbest_pos[i] = self.particles_pos[i].copy()
-                
-                if current_val < self.gbest_val:
-                    self.gbest_val = current_val
-                    self.gbest_pos = self.particles_pos[i].copy()
+            self.particles_pos[i] += self.particles_vel[i]
             
-            return self.particles_pos, self.gbest_pos, self.gbest_val
+            self.particles_pos[i] = np.clip(self.particles_pos[i], self.bounds[0][0], self.bounds[0][1])
 
-    ```
+            current_val = self.objective_func(self.particles_pos[i])
+            if current_val < self.pbest_val[i]:
+                self.pbest_val[i] = current_val
+                self.pbest_pos[i] = self.particles_pos[i].copy()
+            
+            if current_val < self.gbest_val:
+                self.gbest_val = current_val
+                self.gbest_pos = self.particles_pos[i].copy()
+        
+        return self.particles_pos, self.gbest_pos, self.gbest_val
+```
 
 #### Phase 2: 최적화 과정 시각화
 구현된 PSO 클래스를 이용해 실제로 최적화 과정을 실행하고, Matplotlib을 통해 입자들이 움직이는 모습을 애니메이션으로 그렸다.
@@ -165,6 +164,5 @@ def animate(i):
     return particles_scatter, gbest_scatter, title_text
 
 anim = FuncAnimation(fig, animate, frames=N_ITERATIONS, interval=100, blit=True)
-
-plt.show()
+anim.save('pso_animation.gif', writer='pillow', fps=10)
 ```
