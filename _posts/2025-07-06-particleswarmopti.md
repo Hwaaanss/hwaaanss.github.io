@@ -59,6 +59,7 @@ $$
 1. 라이브러리 임포트
 
 ```python
+%matplotlib inline
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
@@ -67,6 +68,7 @@ plt.close('all')
 ```
 
 2. 최적화할 대상 함수를 정의했다. 목적 함수는 Rastrigin Function를 사용했다. Rastrigin Function는 최적화 알고리즘 벤치마크에 자주 사용되는 함수로, Global optimum은 하나지만 그 주변에 Local optimum이 많이 존재하는 함수이다. 이 function의 형태를 눈으로 확인하기 위한 코드이다.
+
 ```python
 def rastrigin_function_3d(x, y):
     A = 10
