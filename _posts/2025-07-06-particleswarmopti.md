@@ -1,6 +1,6 @@
 ---
 layout: single
-title: "Particle Swarm Optimization (PSO) 탐구 기록 (작성중)"
+title: "Particle Swarm Optimization (PSO) 탐구 기록"
 excerpt: "하나가 아닌 여럿이서 최적의 답을 찾아나가는 최적화 알고리즘"
 mathjax: true
 toc: true
@@ -14,10 +14,10 @@ tags: [DL, Optimization]
 학교에서 들은 딥러닝 관련 강의에서 배웠던 딥러닝 관련 optimizer들은 SGD, RMSProp, AdaGrad, Adam이 있다. 하지만 "이 최적화 알고리즘들은 혼자서 움직이는데 local minima 에서의 탈출이 과연 실제 데이터풀에서도 이론처럼 잘 될까?" 라는 의문이 계속 들었다. 또한 단순한 최적화 기법으로만 알고 있다가 유튜버 혁펜하임의 영상을 보다가 최적화이론이라는게 있다는 것을 알게 되었다. 그래서 알아보니 내가 알고 있던 최적화 기법들은 현재는 정말 일반적인 기법이고, 더 고도화되거나 창의적인 아이디어를 이용한 기법들이 많은 것을 알고 호기심이 생겨 계속해서 공부를 이어갔다. 이 호기심은 자연에서 영감을 얻은 Metaheuristic 최적화 알고리즘으로 이어졌다. 그중에서도 새나 물고기 떼의 사회적 행동을 모방한 **Particle Swarm Optimization (PSO)**가 직관적이면서도 강력해 보여서, 이번 기회에 제대로 파헤쳐 보기로 마음먹었다.
 
 ## Details
-**연구 정의**: 개별 입자들이 각자 탐색한 최적의 경험=과 집단 전체가 공유하는 최적의 경험=을 바탕으로, 문제 공간을 효율적으로 탐색하여 전역 최적해(Global Optimum)를 찾는 알고리즘을 이해하고 구현하는 것을 목표로 함
+**연구 정의**: 개별 입자들이 각자 탐색한 최적의 경험과 집단 전체가 공유하는 최적의 경험=을 바탕으로, 문제 공간을 효율적으로 탐색하여 전역 최적해(Global Optimum)를 찾는 알고리즘을 이해하고 구현하는 것을 목표로 함
 
 #### 알고리즘의 주요 학습 포인트
-1.  **입자(Particle)의 상태**: 각 입자는 위치와 속도라는 두 가지 핵심 정보를 가진다. 위치는 문제에 대한 하나의 해답 후보이고, 속도는 이 후보가 다음 스텝에서 어느 방향으로 얼마나 이동할지를 결정하는 '벡터'라고 볼 수 있다
+1.  **입자(Particle)의 상태**: 각 입자는 위치와 속도라는 두 가지 핵심 정보를 가진다. 위치는 문제에 대한 하나의 해답 후보이고, 속도는 이 후보가 다음 스텝에서 어느 방향으로 얼마나 이동할지를 결정하는 벡터라고 볼 수 있다
 2.  **두 가지 핵심 정보**:
     * `pbest` (Personal Best): 한 입자가 탐색을 시작한 이래로 발견한 가장 좋았던, 즉 목적 함수 값이 가장 낮은 위치이다. 각 입자의 개인적인 기억으로도 볼 수 있다.
     * `gbest` (Global Best): 전체 입자들 중에서 가장 좋았던 위치이다. 집단 전체가 공유하는 최적의 의견(?) 이라고 볼 수 있다.
@@ -59,13 +59,49 @@ $$
 1. 라이브러리 임포트
 
 ```python
+%matplotlib inline
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
+from mpl_toolkits.mplot3d import Axes3D
+plt.close('all')
 ```
 
-2. PSO 최적화기 클래스 정의 및 목적 함수 정의
-알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계하고, 최적화할 대상 함수를 정의했다. 목적 함수는 Rastrigin Function를 사용했다. Rastrigin Function는 최적화 알고리즘 벤치마크에 자주 사용되는 함수로, Global optimum은 하나지만 그 주변에 Local optimum이 많이 존재하는 함수이다. 
+2. 최적화할 대상 함수를 정의했다. 목적 함수는 Rastrigin Function를 사용했다. Rastrigin Function는 최적화 알고리즘 벤치마크에 자주 사용되는 함수로, Global optimum은 하나지만 그 주변에 Local optimum이 많이 존재하는 함수이다. 이 function의 형태를 눈으로 확인하기 위한 코드이다.
+```python
+def rastrigin_function_3d(x, y):
+    A = 10
+    return (A * 2 +
+            (x**2 - A * np.cos(2 * np.pi * x)) +
+            (y**2 - A * np.cos(2 * np.pi * y)))
+
+bounds_3d = [-5.12, 5.12]
+x_3d = np.linspace(bounds_3d[0], bounds_3d[1], 200)
+y_3d = np.linspace(bounds_3d[0], bounds_3d[1], 200)
+X_3d, Y_3d = np.meshgrid(x_3d, y_3d)
+Z_3d = rastrigin_function_3d(X_3d, Y_3d)
+
+fig_3d = plt.figure(figsize=(10, 7))
+ax_3d = fig_3d.add_subplot(111, projection='3d')
+
+surf = ax_3d.plot_surface(X_3d, Y_3d, Z_3d, cmap='viridis', edgecolor='none')
+
+ax_3d.set_title('3D Surface of Rastrigin Function', fontsize=15)
+ax_3d.set_xlabel('X axis')
+ax_3d.set_ylabel('Y axis')
+ax_3d.set_zlabel('Z axis (Value)')
+
+fig_3d.colorbar(surf, shrink=0.5, aspect=5)
+ax_3d.view_init(elev=50, azim=-65)
+
+plt.show()
+```
+
+결과는 이렇게 나온다.
+
+![graph](/images/2025-07-06-pso/graph.png)
+
+3. PSO 최적화기 클래스 정의 및 목적 함수 정의. 알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
 
 ```python
 def rastrigin_function(particle_position):
@@ -145,7 +181,7 @@ x = np.linspace(BOUNDS[0][0], BOUNDS[0][1], 200)
 y = np.linspace(BOUNDS[1][0], BOUNDS[1][1], 200)
 X, Y = np.meshgrid(x, y)
 Z = rastrigin_function([X, Y])
-ax.contour(X, Y, Z, levels=np.linspace(0, 100, 21), cmap='viridis_r') 
+ax.contour(X, Y, Z, levels=np.linspace(0, 100, 21), cmap='viridis_r')
 
 particles_scatter = ax.scatter([], [], c='blue', alpha=0.7, label='Particles')
 gbest_scatter = ax.scatter([], [], c='red', marker='*', s=200, label='Global Best')
@@ -160,5 +196,11 @@ def animate(i):
     return particles_scatter, gbest_scatter, title_text
 
 anim = FuncAnimation(fig, animate, frames=N_ITERATIONS, interval=100, blit=True)
-anim.save('pso_rastrigin_animation.gif', writer='pillow', fps=30)
+anim.save('pso_rastrigin_animation.gif', writer='pillow', fps=120)
 ```
+
+결과 gif는 아래와 같이 나온다. 많은 입자들이 서로 정보를 공유함으로써 Local optimum이 많은 복잡한 함수에서도 Global optimum을 잘 찾아가는 것을 볼 수 있다. 
+![graph](/images/2025-07-06-pso/pso_rastrigin_animation.gif)
+
+## 느낀점/알게된 점
+기본적인 최적화 기법 말고도 다양한 최적화 기법이 있다는 것을 구현을 통해 더욱 실감하게 되었다. 특히 자연현상에서 비롯된 아이디어라는 부분이 굉장히 흥미로웠고, 한편으로는 정말 창의적이라는 느낌을 받았다. 이러한 기법들을 이용해서 추후 모델의 성능향상이 더 필요할 때 사용해 유의미한 결과를 얻어내면 더 뿌듯할 것 같다.
