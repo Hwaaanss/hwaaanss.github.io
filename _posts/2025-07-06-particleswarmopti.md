@@ -102,7 +102,7 @@ plt.show()
 
 ![graph](/images/2025-07-06-pso/graph.png)
 
-3. PSO 최적화기 클래스 정의 및 목적 함수 정의. 알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
+3. PSO 최적화 클래스 정의 및 목적 함수를 정의하고, 알고리즘의 세부 파라미터와 로직을 담은 클래스를 설계했다.
 
 ```python
 def rastrigin_function(particle_position):
