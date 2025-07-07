@@ -59,7 +59,6 @@ $$
 1. 라이브러리 임포트
 
 ```python
-%matplotlib inline
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
