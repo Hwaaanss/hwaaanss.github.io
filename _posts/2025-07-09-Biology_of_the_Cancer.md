@@ -5,7 +5,7 @@ excerpt: KOLA 아주대 박태준 교수님 강의
 toc: true
 toc_label: Contents
 toc_sticky: 
-categories: BI
+categories: Study
 tags:
   - Biology
   - Cancer
