@@ -4,7 +4,7 @@ title: Biology of the Cancer 강의 정리(작성중)
 excerpt: KOLA 아주대 박태준 교수님 강의
 toc: true
 toc_label: Contents
-toc_sticky: 
+toc_sticky: true
 categories: Study
 tags:
   - Bio
