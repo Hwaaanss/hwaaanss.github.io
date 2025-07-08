@@ -6,9 +6,7 @@ toc: true
 toc_label: Contents
 toc_sticky: true
 categories: Study
-tags:
-  - Bio
-  - Cancer
+tags: [Bio, Cancer]
 ---
 
 ## 용어 정리
@@ -27,10 +25,12 @@ tags:
 
 ## 암 발생 과정 (Carcinogenesis)
 암은 복잡한 과정을 거쳐 발생하며, 주로 세 단계로 구분된다.
+
 ### 1. 암 개시과정 (Initiation)
 DNA가 발암물질에 노출되어 `DNA repairs`에 `mutation`이 생기는 단계이다. 이는 빠르고 비가역적인 변화이다. 즉, DNA 에 mutation이 생기면 apoptosis 과정에 의해 죽어야 하는데 죽지 않고 계속 살아가는 것이다.
 - `DNA repairs`(DNA 복구) : 세포가 스스로 DNA에 발생한 손상이나 오류를 감지하고 수정하는 능력. 방사선, 화학물질, 복제 실수 등으로 DNA 가 손상되면 이 복구 시스템이 작동하여 원래의 정상 상태로 되돌린다.
 - `mutation` : 돌연변이
+
 #### 암 개시물질 (Initiator)
 DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `DNA methylation` 이나 `DNA ethylation` 을 유도한다. 또, `DNA break`, `DNA translocation`, `DNA deletion` 등을 유도할 수도 있다. 즉, `DNA point mutation` 을 일으키는 것을 Initiator 라고 한다.
 - `DNA methylation`(DNA 메틸화) : 우리 몸이 유전자 사용 여부를 결정하기 위해 DNA에 붙히는 스위치. 암세포에서는 암 억제 스위치는 끄고(과메틸화), 암 유발 스위치는 키는 (저메틸화) 이상이 발생한다. 
@@ -39,6 +39,7 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - `DNA translocation`(DNA 전위) : 염색체 일부가 부러져서 다른 엉뚱한 염색체에 가서 붙는 현상이다. 유전정보의 위치가 뒤바뀌어 세포 기능에 큰 혼란을 줄 수 있다.
 - `DNA deletion`(DNA 결실) : DNA의 일부 정보가 통째로 사라지는 돌연변이이다.
 - `DNA point mutation`(DNA 점 돌연변이) : DNA 염기 서열에서 단 하나의 글자(염기)가 다른 것으로 바뀌거나, 추가되거나, 빠지는 아주 작은 규모의 돌연변이이다. 작은 변화처럼 보여도 단백질 구조와 기능을 완전히 바꿔 암을 유발하는 원인이 되기도 한다.
+
 #### 환경에서의 Initiator
 - dibenz[a,h]ansthracene (다이벤즈[a,h]안트라센) : 화학적으로 정제된 다환 방향족 탄화수소. 주로 석탄, 석유, 가스 등 유기물질이 탈 때 생성된다. 
 - benzo[a]pyrene (벤조[a]피렌) : 다환 방향족 탄화수소 중에서 가장 잘 알려진 1군 발암물질. 고기를 태워서 조리할 때 다량 생성되고, 자동차 배기가스나 공장 연기, 담배 연기 등에 발생하는 연기에도 포함되어 있다.
