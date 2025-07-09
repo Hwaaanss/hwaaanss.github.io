@@ -47,8 +47,7 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 위 세 가지 물질들과 같은 PAHs(다환 방향족 탄화수소)가 체내에 들어오게 되면, 장기들은 이 외부 물질을 분해해서 내보내기 위해 효소를 이용해 화학구조를 바꾸기 시작한다. 하지만 이 과정에서 의도치 않게 원래 물질보다 더 반응성이 높고 위험한 중간 대사물질인 diol-epoxide로 변한다. 이 물질은 아주 불안정해서 주변의 다른 분자와 강력하게 결합하려는 성질이 있다. 이때 가장 가까이 있는 DNA의 염기 중 주로 구아닌이나 아데닌을 공격하여 공유 결합을 형성한다. 이 공유 결합은 아주 강력하고 안정적이다. 이렇게 발암물질이 DNA 에 달라붙은 형태를 DNA adduct(DNA 부가물)이라고 한다. 이 DNA adduct로 인해 DNA point mutation 을 야기하거나, DNA repair 시스템의 복구를 실패시킨다. 위 세가지 물질들은 담배 연기에 많이 있어서, 폐에 있는 상피세포의 DNA 에 달라붙어 암을 유발할 수 있다.
 
 ### 2. 암 진행과정 (Promotion)
-이 과정은 Initiation이 일어났던 세포들이 죽지 않고 살아남아 `proliferation` 되지만, mutation이 일어나는 과정은 아니다. Growth rate 와 survival이 증가하는 과정이라고 보면 된다. 이 promotion을 일으키는 물질을 promoter라고 한다. Promoter 는 `TPA type` 과 `non-TPA type` 으로 나뉜다. 
-
+이 과정은 Initiation이 일어났던 세포들이 죽지 않고 살아남아 `proliferation` 되지만, mutation이 일어나는 과정은 아니다. Growth rate 와 survival이 증가하는 과정이라고 보면 된다. 이 promotion을 일으키는 물질을 promoter라고 한다. Promoter 는 `TPA type` 과 `non-TPA type` 으로 나뉜다. 암이 진행되려면 initiator 한 번에, 여러번의 promoter 가 있어야 가능하다. 다시 말해 암은 DNA mutation이 꼭 수반되어야 하며, 암 promoter에 지속적인 노출이 있어야 암이 발생한다.
 - `proliferation` : 세포 분열을 통해 세포의 수가 급격히 늘어나는 것.
 - `TPA type` : 세포 내에 인산화, 활성도를 증가시키는 물질. 세포 내 신호전달 물질인 DAG(다이아실글리세롤)과 구조가 매우 비슷하다. 이 때문에 TPA 는 `PKC`라는 인산화 효소를 직접적으로 활성화 시킨다.
 - `PKC` : 단백질 인산화 효소. 
@@ -58,3 +57,23 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - Cell proliferation : 세포 분열을 통해 세포의 수가 급격히 늘어나는 것이다.
 - Apoptosis inhibition : Mutation이 일어난 세포가 apoptosis를 못하게 막는 것이다.
 - Chronic inflammation : 만성 염증을 유발하는 것이다.
+
+#### Example of Promoters
+- Hormones : 호르몬
+- Estrogen : 여성호르몬. Endometrium(자궁내막)에 promote 가능.
+- Testosterone : 남성호르몬. Prostate(전립선)에 promote 가능.
+- Drug - Diuretics : 이뇨제. Kidney(신장)에 promote 가능.
+- Hepatitis B/C viruses : B형/C형 간염 바이러스. Liver(간)에 promote 가능.
+- Helicobacter pylori : 헬리코박터균. Stomach(위)에 promote 가능.
+- Bile : 담즙. Small intestine(소장)에 promote 가능.
+- Salt : 소금. Stomach(위)에 promote 가능.
+- Acid reflux : 위산 역류. Esophagus(식도)에 promote 가능.
+- Chronic inflammation : 만성 염증. 
+- Chronic ulcerative colitis : 대장의 만성 염증 질환. Colon(대장)에 promote 가능.
+
+####  암의 성장 기간
+- Colon : Adenoma(양성 종양) 까지 5~20년 소요되고, adenoma부터 악성 종양으로 성장하는 데에 5~15년이 소요된다. 
+- Lung : 담배를 1년에 20~40갑 피는 사람은 폐암 발병까지 약 20년 소요된다.
+- Prostate : 초반 약 20년이 지나면 `hyperplasia` 상태가 된다. 이후 약 10년 후에는 `latent cancer` 가 되고, 이후 약 3~15년 후가 되면 암이 된다.
+- `hyperplasia` : 증식을 하지만, 아직 암은 아닌 상태
+- `latent cancer` : 잠재암. 아직 크기가 아주 작고 성장 속도가 느리지만, 조직 검사를 하면 암세포의 모양을 하고 있는 암. 
