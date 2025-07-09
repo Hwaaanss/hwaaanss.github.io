@@ -53,3 +53,8 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - `TPA type` : 세포 내에 인산화, 활성도를 증가시키는 물질. 세포 내 신호전달 물질인 DAG(다이아실글리세롤)과 구조가 매우 비슷하다. 이 때문에 TPA 는 `PKC`라는 인산화 효소를 직접적으로 활성화 시킨다.
 - `PKC` : 단백질 인산화 효소. 
 - `non-TPA type` : 인산화가 된 것을 띄워주는 물질. 세포 내에서 정상적으로 인산화 된 단백질들의 탈인산화를 PP1, PP2A 와 같은 인산화 분해 효소를 억제함으로써 막아 계속 인산화 된 상태로 남아있게 만든다. 
+
+#### 암 진행물질 (Promoter)
+- Cell proliferation : 세포 분열을 통해 세포의 수가 급격히 늘어나는 것이다.
+- Apoptosis inhibition : Mutation이 일어난 세포가 apoptosis를 못하게 막는 것이다.
+- Chronic inflammation : 만성 염증을 유발하는 것이다.
