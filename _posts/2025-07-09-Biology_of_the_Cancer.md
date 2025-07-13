@@ -9,14 +9,11 @@ categories: Study
 tags: [Bio, Cancer]
 ---
 
-## 용어 정리
-- Cancer : 악성 종양
-- Tumor : 악성/양성 종양
-
-
 ## 암의 정의와 특징
 암은 비정상적인 세포가 조절되지 않고 계속해서 증식하는 질병을 의미한다. 이러한 세포들은 주변 조직으로 침입하여 손상을 입히고, 다른 부위로 전이될 수 있으며 궁극적으로 사망에 이르게 할 수 있다. 정상 세포의 경우, 손상을 입으면 `apoptosis` 과정을 통해 스스로 제거되지만 , 암세포는 이러한 과정 없이 무한정 분열을 계속한다.
 - `apoptosis`(세포 사멸) : 돌연변이 세포가 스스로 사멸하는 것
+- Cancer : 악성 종양
+- Tumor : 악성/양성 종양
 
 ## 암의 원인
 암 발생의 원인은 유전적 요인과 환경적 요인으로 나눌 수 있다.
@@ -77,3 +74,30 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - Prostate : 초반 약 20년이 지나면 `hyperplasia` 상태가 된다. 이후 약 10년 후에는 `latent cancer` 가 되고, 이후 약 3~15년 후가 되면 암이 된다. 대략 40년 정도 걸린다.
 - `hyperplasia` : 증식을 하지만, 아직 암은 아닌 상태
 - `latent cancer` : 잠재암. 아직 크기가 아주 작고 성장 속도가 느리지만, 조직 검사를 하면 암세포의 모양을 하고 있는 암. 
+
+## 암의 진단
+#### 암의 진단에 있어서 중요한 요소들
+- Clinical Symptom : 임상적 진단. 두통, 황달 등과 같은 증상들을 말한다.
+- Medical observation : medical doctor가 clinical symptom과 질문 등을 토대로 여러 진단을 통해 진행하는 것.
+- Radiological finding : 방사선 검사
+- Hematological examination : 혈액 검사
+- Biopsy : 조직 검사. 암을 진단하는 거의 마지막 단계이다.
+
+#### Classical Diagnosis
+- Blood test : 혈액 검사
+- Urine test : 소변 검사
+- CSF test : 뇌척수액 검사
+- Radiological finding : MRI, CT 등과 같은 방사선적 검사하는 것.
+- DNA finding : 어떤 유전자가 암 발생에 원인이 되는지 검사하는 것.
+
+#### Biopsy
+다양한 방법으로 검사를 한 후, 최종적으로 암을 확진하기 위해서는 조직 검사가 필요함. 조직 검사는 피부 바깥쪽에서 안쪽으로 주사를 찔러넣고 안쪽에 있는 세포를 가져오거나, 내시경과 같은 것을 통해 육안으로 확인 한 후 이상 징후가 포착된 부분의 조직을 떼어내서 H/E(`Hematoxylin-Eosin`) 염색을 한 후 현미경으로 검사하는 것을 말함. 검사를 통해 이 세포가 정상 세포와 다르다는 것을 파악한 뒤에 이것이 악성 종양인지, 양성 종양인지, 염증(inflammation)인지를 최종적으로 판단할 수 있다. 
+- `Hematoxylin-Eosin` : 떼어낸 조직을 H/E 염색을 시키면 세포의 핵은 보라색(Hematoxylin)으로, 세포질과 주변 조직(Eosin)은 분홍색으로 염색된다. 
+
+## Normal vs Pathologic condition
+#### Basic tissue types
+- Epithelium : 
+- Connective tissue : 
+- Muscle tissue : 
+- Nerve tissue : 
+
