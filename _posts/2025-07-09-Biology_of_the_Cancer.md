@@ -111,8 +111,8 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 	- 악성종양(Malignant tumors) : 다양한 분화(range from well differentiated to un differentiated) 정도를 갖지만, well differentiated 상태인 종양이 상대적으로 더 예후가 좋다. 특징으로는 정상 세포보다 핵의 크기가 더 크다. NC ratio(Nuclear-Cytoplasmic ratio)는 세포핵 크기/세포질의 크기로, malignant tumor의 경우 NC ratio가 크다. 
 - 역형성(Anaplasia) : 종양세포가 분화가 안 일어난 상태이다.
 	**A Hallmark of Malignancy**
-	- 세포와 핵의 모양과 크기가 다양(Pleomorphism)
-	- 핵형태의 이상(Abnormal nuclear morphology)
-	- 유사분열(Mitoses)
-	- 극성 소실(Loss of polarity)
-	- 기타 변화(Other changes)
+	- Pleomorphism : 세포핵과 세포의 모양과 크기가 다양한 것.
+	- Abnormal nuclear morphology : 세포핵의 크기가 다양한 것.
+	- Mitoses : 유사분열을 말한다. Mitoses가 많이 관찰된다는 것은 growth rate가 빠르다는 것을 의미함.
+	- Loss of polarity : 극성을 잃어버리고 자기 마음대로 움직이는 극성 소실을 말한다. 
+	- Other changes : 기타 변화
