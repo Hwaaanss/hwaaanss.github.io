@@ -91,13 +91,28 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - DNA finding : 어떤 유전자가 암 발생에 원인이 되는지 검사하는 것.
 
 #### Biopsy
-다양한 방법으로 검사를 한 후, 최종적으로 암을 확진하기 위해서는 조직 검사가 필요함. 조직 검사는 피부 바깥쪽에서 안쪽으로 주사를 찔러넣고 안쪽에 있는 세포를 가져오거나, 내시경과 같은 것을 통해 육안으로 확인 한 후 이상 징후가 포착된 부분의 조직을 떼어내서 H/E(`Hematoxylin-Eosin`) 염색을 한 후 현미경으로 검사하는 것을 말함. 검사를 통해 이 세포가 정상 세포와 다르다는 것을 파악한 뒤에 이것이 악성 종양인지, 양성 종양인지, 염증(inflammation)인지를 최종적으로 판단할 수 있다. 
+다양한 방법으로 검사를 한 후, 최종적으로 암을 확진하기 위해서는 조직 검사가 필요함. 조직검사는 피부 바깥쪽에서 안쪽으로 주사를 찔러넣고 안쪽에 있는 세포를 가져오거나, 내시경과 같은 것을 통해 육안으로 확인 한 후 이상 징후가 포착된 부분의 조직을 떼어내서 H/E(`Hematoxylin-Eosin`) 염색을 한 후 현미경으로 검사하는 것을 말함. 검사를 통해 이 세포가 정상 세포와 다르다는 것을 파악한 뒤에 이것이 악성 종양인지, 양성 종양인지, 염증(inflammation)인지를 최종적으로 판단할 수 있다. 
 - `Hematoxylin-Eosin` : 떼어낸 조직을 H/E 염색을 시키면 세포의 핵은 보라색(Hematoxylin)으로, 세포질과 주변 조직(Eosin)은 분홍색으로 염색된다. 
 
 ## Normal vs Pathologic condition
-#### Basic tissue types
-- Epithelium : 
-- Connective tissue : 
-- Muscle tissue : 
-- Nerve tissue : 
+#### Normal: Basic tissue types
+- Epithelium : 상피조직. 피부의 바깥쪽의 세포들을 이야기 한다. 예를 들어 피부의 `Keratinocyte`와 같은 것들이 상피조직이다.
+- Connective tissue : 결합조직. 피부 밑에 있는 dummies 층을 이야기 한다. 보통 상피조직 바로 아래에 있는 층을 이야기 한다.
+- Muscle tissue : 팔과 다리, 혹은 소화기관이나 심장과 같이 움직이는 모든 곳에 있다. Connective tissue 조직 바로 아래에도 존재할 수 있다.
+- Nerve tissue : 신경조직으로 뇌, 척수 같은 곳에 있다.
 
+#### Pathology: Right cells in the wrong place(Barret's Esophagus)
+- Barret's Esophagus : 식도(esophagus)에서는 식도 세포가 있어야 하는데, 소장(small intestine) 과 비슷하게 생긴 세포가 biopsy 결과로 나타남. 이는 acid reflux 가 자주 일어나는 사람의 식도에서 주로 발견된다.
+
+#### Pathology: Neoplasm
+**Pathologic Criteria I**
+- 분화(Differentiation) : 종양 세포의 모양과 기능이 정상 세포를 닮은 정도를 분화도라고 한다. 분화도가 높을수록 성장 속도가 느리고, 덜 공격적이어서 예후가 좋다. 반대로 분화도가 낮을수록 공격적이고, 성장 속도가 높아 예후가 좋지 않다.
+	- 양성종양(Benign tumors) : 고분화도(well differentiated) 상태로, 전이나 침습이 일어나지 않는다. 따라서 제거만 잘 하면 예후가 좋은 암이다. 
+	- 악성종양(Malignant tumors) : 다양한 분화(range from well differentiated to un differentiated) 정도를 갖지만, well differentiated 상태인 종양이 상대적으로 더 예후가 좋다. 특징으로는 정상 세포보다 핵의 크기가 더 크다. NC ratio(Nuclear-Cytoplasmic ratio)는 세포핵 크기/세포질의 크기로, malignant tumor의 경우 NC ratio가 크다. 
+- 역형성(Anaplasia) : 종양세포가 분화가 안 일어난 상태이다.
+	**A Hallmark of Malignancy**
+	- 세포와 핵의 모양과 크기가 다양(Pleomorphism)
+	- 핵형태의 이상(Abnormal nuclear morphology)
+	- 유사분열(Mitoses)
+	- 극성 소실(Loss of polarity)
+	- 기타 변화(Other changes)
