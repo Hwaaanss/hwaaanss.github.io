@@ -1,19 +1,26 @@
 ---
 layout: single
-title: Biology of the Cancer 강의 정리(작성중)
-excerpt: KOLA 아주대 박태준 교수님 강의
+title: 암세포생물학 공부 내용 정리
+excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter11 - 암세포
 toc: true
 toc_label: Contents
 toc_sticky: true
 categories: Study
-tags: [Bio, Cancer]
+tags:
+  - Bio
+  - Cancer
 ---
 
-## 암의 정의와 특징
+## 암이란?
+#### 암의 개념
 암은 비정상적인 세포가 조절되지 않고 계속해서 증식하는 질병을 의미한다. 이러한 세포들은 주변 조직으로 침입하여 손상을 입히고, 다른 부위로 전이될 수 있으며 궁극적으로 사망에 이르게 할 수 있다. 정상 세포의 경우, 손상을 입으면 `apoptosis` 과정을 통해 스스로 제거되지만 , 암세포는 이러한 과정 없이 무한정 분열을 계속한다.
 - `apoptosis`(세포 사멸) : 돌연변이 세포가 스스로 사멸하는 것
 - Cancer : 악성 종양
 - Tumor : 악성/양성 종양
+
+#### 1. 암종(Carcinoma)
+- Carcinoma(암종) : 여러 기관을 이루는 epithelial cell(상피세포)이 변형되어 생기는 암이다. squamous epithelial tissue(편평상피조직)에서 발생한 암을 의미한다. 예를 들어 유방암, 췌장암 등이 속한다. 
+- Adenocarcinoma(선암) : 전립선(prostate)과 같이 샘 조직에서 생기는 암이다. 
 
 ## 암의 원인
 암 발생의 원인은 유전적 요인과 환경적 요인으로 나눌 수 있다.
