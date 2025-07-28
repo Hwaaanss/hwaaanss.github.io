@@ -1,7 +1,7 @@
 ---
 layout: single
-title: 암세포생물학 공부 내용 정리
-excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter11 - 암세포
+title: 암세포생물학 정리 (1)
+excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter11 - 암세포1
 toc: true
 toc_label: Contents
 toc_sticky: true
@@ -19,18 +19,22 @@ tags:
 - Tumor : 악성/양성 종양
 
 #### 1. 암종(Carcinoma)
-여러 기관을 이루는 epithelial cell(상피세포)이 변형되어 생기는 암이다. `squamous epithelial tissue`(편평상피조직)에서 발생한 암을 의미한다. 예를 들어 유방암, 췌장암 등이 속한다. 
+여러 기관을 이루는 epithelial cell이 변형되어 생기는 암이다. `squamous epithelial tissue`에서 발생한 암을 의미한다. 예를 들어 유방암, 췌장암 등이 속한다. 
 - `squamous epithelial tissue`(편평상피조직) : 신체의 표피, 구강, 식도 등과 같이 피부와 접하는 부위의 점막을 덮고 있는 납작한 형태의 상피세포를 말한다.
 - Adenocarcinoma(선암) : prostate(전립선)와 같이 샘 조직에서 생기는 암이다. 
 
 #### 2. 육종(Sarcoma)
-`Mesenchymal tissue`(간충 조직)로 부터 유래한 암이다. 뼈, 연골, 지방 등 조직에 생긴 암을 의미한다.
+`Mesenchymal tissue`로 부터 유래한 암이다. 뼈, 연골, 지방 등 조직에 생긴 암을 의미한다.
 - `Mesenchymal tissue`(간충 조직) : 다세포 동물의 발생 과정 중 `mesoderm`(중배엽)에서 유래된 미분화 세포들의 집합체이다.
 - `mesoderm`(중배엽) : 동물 발생 과정에서 외배엽과 내배엽 사이에 위치하는 배엽을 말한다.
 - 배엽 : 동물 발생 과정에서 초기 배아가 분화될 때 나타나는 세포층을 말한다.
 
 #### 3. 백혈병(Leukemia), 림프종(Lymphoma), 골수종(Myeloma)
-ㄴ
+혈액 생성기관에서 생기는 암이다.
+
+#### 4. 신경외배엽(neuroectodermal tissue)의 종양
+신경세포에 생기는 암 및 피부의 `melanoma`이 속한다.
+- `melanoma`(흑색종) : 색소를 생성하는 피부 세포(멜라닌 세포)에서 시작되는 피부암이다.
 
 ## 암의 원인
 암 발생의 원인은 유전적 요인과 환경적 요인으로 나눌 수 있다.
