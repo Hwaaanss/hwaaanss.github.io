@@ -1,7 +1,7 @@
 ---
 layout: single
 title: 암세포생물학 정리 (1)
-excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter11 - 암세포1
+excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter 11 - 암세포
 toc: true
 toc_label: Contents
 toc_sticky: true
@@ -134,7 +134,7 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 - Barret's Esophagus : 식도(esophagus)에서는 식도 세포가 있어야 하는데, 소장(small intestine) 과 비슷하게 생긴 세포가 biopsy 결과로 나타남. 이는 acid reflux 가 자주 일어나는 사람의 식도에서 주로 발견된다.
 
 #### Pathology: Neoplasm
-**Pathologic Criteria I**
+**Pathologic Criteria**
 - 분화(Differentiation) : 종양 세포의 모양과 기능이 정상 세포를 닮은 정도를 분화도라고 한다. 분화도가 높을수록 성장 속도가 느리고, 덜 공격적이어서 예후가 좋다. 반대로 분화도가 낮을수록 공격적이고, 성장 속도가 높아 예후가 좋지 않다.
 	- 양성종양(Benign tumors) : 고분화도(well differentiated) 상태로, 전이나 침습이 일어나지 않는다. 따라서 제거만 잘 하면 예후가 좋은 암이다. 
 	- 악성종양(Malignant tumors) : 다양한 분화(range from well differentiated to un differentiated) 정도를 갖지만, well differentiated 상태인 종양이 상대적으로 더 예후가 좋다. 특징으로는 정상 세포보다 핵의 크기가 더 크다. NC ratio(Nuclear-Cytoplasmic ratio)는 세포핵 크기/세포질의 크기로, malignant tumor의 경우 NC ratio가 크다. 
@@ -145,3 +145,21 @@ DNA mutation을 일으키는 물질을 Initiator 라고 한다. 이 물질은 `D
 	- Mitoses : 유사분열을 말한다. Mitoses가 많이 관찰된다는 것은 growth rate가 빠르다는 것을 의미함.
 	- Loss of polarity : 극성을 잃어버리고 자기 마음대로 움직이는 극성 소실을 말한다. 
 	- Other changes : 기타 변화
+
+## 암세포의 특징
+#### 유전체 분안정성과 돌연변이
+암세포는 mutation 물질에 대한 민감성을 높이거나, DNA 손상을 인지해서 DNA repair를 담당하는 시스템을 망가뜨리는 식으로 유전체의 불안정성을 증가시키고, mutation 생성 확률도 증가시킨다.
+
+#### 암을 일으키는 염증
+암세포 주변의 tumor microenvironment에는 마치 염증(inflammation)처럼 면역세포들이 모여든다. 암을 없애려는 매커니즘이지만 오히려 어떤 암세포들은 이 면역세포가 분비하는 성장인자 등에 의해 오히려 성장이 촉진된다.
+
+#### 면역 시스템에 의한 공격 회피
+어떤 암세포들은 `cytotoxic T lymphocyte`, `Natural Killer cell`의 공격을 회피해서 살아남기도 한다. `TGF-β` 와 같은 면역억제 인자를 분비해서 cytotoxic T cell과 natural killer cell의 기능을 억제하거나 `regulatory T cell` 등을 불러와서 이 면역세포들을 방해한다.
+- `Cytotoxic T Lymphocyte`(TCL) : 암세포를 apoptosis를 유도해 제거하는 역할을 하는 면역세포이다. TCL은 적응 면역이라 항원 학습 후 반응을 한다. 
+- `Natural Killer cell`(NK cell) : TCL 과 마찬가지로 암세포에 apoptosis를 유도해 제거하지만, 차이점은 NK cell 은 선천 면역을 담당해서 특정 항원에 대한 사전 학습 없이도 바이러스에 감염된 세포나 암세포를 바로 인지하고 공격할 수 있다.
+- `TGF-β` : 세포가 무한정 분열하지 않도록 막는 브레이크 역할을 하는 세포이다. 
+- `regulatory T cell`(Treg) : Treg 세포는 TGF-β를 분비해서 CTL과 NK cell의 공격 기능을 억제한다. 이로 인해 암세포들을 보호하고, 면역체계를 약화시켜 암에 취약하게 만든다.
+
+## Tumor Microenvironment(TME)
+암 조직 근처에는 암세포, 면역세포 `CAF` 등이 모여서 서로 여러 신호를 주고 받으며 암 조직의 성장을 유발시킨다. 암을 박멸하기 위해서는 tumor microenvirinment에 대해서도 잘 알아야 한다.
+- `CAF`(Cancer Associated Fibroblast, 암 관련 섬유아세포) : CAF는 TME에 있는 정상 섬유아세포가 암세포의 영향을 받아 변질된 세포이다. 이는 간단한 지시세포가 아니라 TME을 암에게 유리하게 바꾼다. 이를 통해 암의 성장을 촉진시키거나, 암의 전이를 용이하게 하거나, 면역 억제 물질을 분비하기도 한다. 
