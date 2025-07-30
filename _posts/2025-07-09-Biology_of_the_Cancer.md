@@ -1,6 +1,6 @@
 ---
 layout: single
-title: 암세포생물학 정리 (1)
+title: 암세포생물학 강의 정리
 excerpt: KOLA 아주대 박태준 교수님 강의 "Biology of the Cancer", 유튜브 카툰대학과학 강의 2021 세포생물학 chapter 11 - 암세포
 toc: true
 toc_label: Contents
