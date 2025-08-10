@@ -6,9 +6,7 @@ toc: true
 toc_label: Contents
 toc_sticky: true
 categories: Study
-tags:
-  - Bio
-  - Cancer
+tags: [Genomics, Cancer]
 ---
 
 ## 암이란?

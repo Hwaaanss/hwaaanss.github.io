@@ -1,4 +1,13 @@
-# Hallmarks of Cancer: The Next Generation - 상세 정리
+---
+layout: single
+title: Hallmarks of Cancer 논문 정리
+excerpt: Hallmarks of Cancer 논문을 읽고 공부한 점을 정리
+toc: true
+toc_label: Contents
+toc_sticky: true
+categories: Paper_Review
+tags: [Genomics, Cancer]
+---
 
 ### **서론 (Introduction)**
 
