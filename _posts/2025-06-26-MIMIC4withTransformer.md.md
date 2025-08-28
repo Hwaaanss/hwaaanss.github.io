@@ -1,6 +1,6 @@
 ---
 layout: single
-title: MIMIC-IV 데이터를 Transformer 를 활용하여 처치 및 시술 등의 순서 추천 모델 개발(작성 중)
+title: MIMIC-IV 데이터를 활용한 FT-Transformer 모델 기반 처치 및 시술 등의 순서 추천 모델 개발(작성 중)
 excerpt: 치료의 조합보다 순서에 집중하는 모델
 mathjax: true
 toc: true
